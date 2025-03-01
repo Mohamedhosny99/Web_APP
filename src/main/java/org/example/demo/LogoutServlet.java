@@ -18,5 +18,6 @@ public class LogoutServlet extends HttpServlet {
 
         // Redirect to login page
         response.sendRedirect("login.jsp?message=Logged out successfully");
+      System.out.println("logout");
     }
 }
