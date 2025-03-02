@@ -12,8 +12,8 @@ import com.twilio.type.PhoneNumber;
 
 @WebServlet(name = "twilio-servlet", urlPatterns = {"/TwilioServlet"})
 public class TwilioServlet extends HttpServlet {
-    private static final String ACCOUNT_SID = "AC832a67b88671f52f026207b9e4d5b21d";
-    private static final String AUTH_TOKEN = "ed8babd5ddc2c3be665d503d1ac688df";
+    String ACCOUNT_SID = System.getenv("TWILIO_ACCOUNT_SID");
+    String AUTH_TOKEN = System.getenv("TWILIO_AUTH_TOKEN");
     @Override
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
