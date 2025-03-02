@@ -1,5 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-
+<%
+    HttpSession sessionObj = request.getSession(false);
+    if (sessionObj == null || sessionObj.getAttribute("userId") == null) {
+        response.sendRedirect("login.jsp?error=Please login first");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
