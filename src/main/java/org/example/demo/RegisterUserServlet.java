@@ -58,7 +58,7 @@ public class RegisterUserServlet extends HttpServlet {
             response.sendRedirect("login.jsp?message=Registration successful");
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("register.jsp?error=Database error");
+            response.sendRedirect("customer_register.jsp?error=Database error");
         }
     }
 }
