@@ -4,9 +4,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBconnection {
-    private static final String URL = "jdbc:postgresql://localhost:5432/my_web_app";
+    private static final String URL = "jdbc:postgresql://localhost:5432/sms_system";
     private static final String USER = "postgres"; // Your PostgreSQL username
-    private static final String PASSWORD = "123"; // Your PostgreSQL password
+    private static final String PASSWORD = "root"; // Your PostgreSQL password
 
     public static Connection getConnection() throws SQLException {
         try {

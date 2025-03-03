@@ -14,15 +14,15 @@
 </head>
 <body>
 <h2>Registration</h2>
-<form action="RegisterUserServlet" method="post">
+<form action="RegisterCustomerServlet" method="post">
     <input type="text" name="username" placeholder="Username" required />
     <input type="email" name="email" placeholder="Email" required />
     <input type="password" name="password" placeholder="Password" required />
     <input type="text" name="phone" placeholder="Phone Number" required />
-    <select name="role" required>
-        <option value="customer">Customer</option>
-        <option value="admin">Admin</option>
-    </select>
+    <input type="text" name="job" placeholder="job" required/>
+    <input type="text" name="address" placeholder="address"/>
+    <input type="date" name="birthday" placeholder="Birthdate" required />
+
     <button type="submit">Register</button>
 </form>
 </body>

@@ -20,7 +20,7 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         try (Connection conn = DBConnection.DBconnection.getConnection()) {
-            String sql = "SELECT id, username, role FROM users WHERE username = ? AND password = ?";
+            String sql = "SELECT user_id, username, type FROM users WHERE username = ? AND password = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, username);
             stmt.setString(2, password);  // In real-world apps, hash passwords!
@@ -28,15 +28,15 @@ public class LoginServlet extends HttpServlet {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                int userId = rs.getInt("id");
-                String role = rs.getString("role");
+                int userId = rs.getInt("user_id");
+                String type = rs.getString("type");
 
                 HttpSession session = request.getSession();
                 session.setAttribute("userId", userId);
                 session.setAttribute("username", username);
-                session.setAttribute("role", role);
+                session.setAttribute("type", type);
 
-                if ("admin".equals(role)) {
+                if ("admin".equals(type)) {
                     response.sendRedirect("adminDashboard.jsp");
                 } else {
                     response.sendRedirect("customer.jsp");

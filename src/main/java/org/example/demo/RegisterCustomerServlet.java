@@ -15,24 +15,34 @@ public class RegisterCustomerServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String fullName = request.getParameter("full_name");
+        String username = request.getParameter("username");
         String email = request.getParameter("email");
-        String password = request.getParameter("user_password");
+        String password = request.getParameter("password");
         String phone = request.getParameter("phone");
+        String job = request.getParameter("job");
+        String birthday = request.getParameter("birthday");
+        String address = request.getParameter("address");
 
         System.out.println("Received values:");
-        System.out.println("Full Name: " + fullName);
+        System.out.println("Full Name: " + username);
         System.out.println("Email: " + email);
         System.out.println("Password: " + password);
         System.out.println("Phone: " + phone);
+        System.out.println("Job: " + job);
+        System.out.println("Birthday: " + birthday);
+        System.out.println("Address: " + address);
 
         try (Connection conn = DBConnection.DBconnection.getConnection()) {
-            String sql = "INSERT INTO customersttest(full_name, email, user_password, phone) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO customer(username, email, password, phone_number, job, address, birthday) VALUES (?, ?, ?, ?,?,?,?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, fullName);
+            stmt.setString(1, username);
             stmt.setString(2, email);
             stmt.setString(3, password);  // Hash passwords in real applications!
             stmt.setString(4, phone);
+            stmt.setString(5, job);
+            stmt.setString(6, address);
+            stmt.setDate(7, java.sql.Date.valueOf(birthday));
+
 
 
             int rowsInserted = stmt.executeUpdate();
