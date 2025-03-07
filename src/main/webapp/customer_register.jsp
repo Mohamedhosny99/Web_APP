@@ -123,7 +123,7 @@
 <body>
 <div class="register-container">
     <h2>Register</h2>
-    <form action="RegisterUserServlet" method="POST">
+    <form action="RegisterCustomerServlet" method="POST">
         <input type="text" name="name" placeholder="Name" required>
         <input type="date" name="birthday" placeholder="Birthday" required>
         <input type="password" name="password" placeholder="Password" required>
