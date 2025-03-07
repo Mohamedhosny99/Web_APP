@@ -16,11 +16,11 @@ public class RegisterUserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String username = request.getParameter("username");
+        String username = request.getParameter("name");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String phone = request.getParameter("phone");
-        String role = request.getParameter("role");
+        String role = "Customer";
 
         System.out.println("Received values:");
         System.out.println("Username: " + username);
@@ -31,7 +31,7 @@ public class RegisterUserServlet extends HttpServlet {
 
         try (Connection conn = DBConnection.DBconnection.getConnection()) {
             // Insert into users table
-            String userSql = "INSERT INTO users (username, password, role) VALUES (?, ?, ?) RETURNING id";
+            String userSql = "INSERT INTO users (username, password) VALUES (?, ?) RETURNING id";
             PreparedStatement userStmt = conn.prepareStatement(userSql);
             userStmt.setString(1, username);
             userStmt.setString(2, password);  // Hash passwords in real applications!
@@ -43,7 +43,7 @@ public class RegisterUserServlet extends HttpServlet {
                 userId = rs.getInt("id");
             }
 
-            if (userId > 0 && "customer".equals(role)) {
+            if (userId > 0 && role == "Customer") {
                 // Insert into customers table if the user is a customer
                 String customerSql = "INSERT INTO customers (user_id, name, email, phone) VALUES (?, ?, ?, ?)";
                 PreparedStatement customerStmt = conn.prepareStatement(customerSql);

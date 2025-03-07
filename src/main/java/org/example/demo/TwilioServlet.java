@@ -20,8 +20,8 @@ public class TwilioServlet extends HttpServlet {
 
         try {
             Message message = Message.creator(
-                    new PhoneNumber("+201142555080"),  // To number (recipient)
-                    new PhoneNumber("+19792716307"), // From (Twilio number)
+                    new PhoneNumber("+201142555080"),
+                    new PhoneNumber("+19792716307"),
                     "Hello! This is a test message from your Java servlet."
             ).create();
 
