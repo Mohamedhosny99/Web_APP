@@ -124,16 +124,16 @@
 <div class="register-container">
     <h2>Register</h2>
     <form action="RegisterCustomerServlet" method="POST">
-        <input type="text" name="username" placeholder="Name" required>
+        <input type="text" name="name" placeholder="Name" required>
         <input type="date" name="birthday" placeholder="Birthday" required>
         <input type="password" name="password" placeholder="Password" required>
         <input type="text" name="phone" placeholder="Phone Number (MSISDN)" required>
-        <input type="text" name="job" placeholder="Job" required>
+        <input type="text" name="role" placeholder="Job" required>
         <input type="email" name="email" placeholder="Email" required>
         <input type="text" name="address" placeholder="Address" required>
         <input type="text" name="twilioSID" placeholder="Twilio Account SID" required>
         <input type="text" name="twilioToken" placeholder="Twilio Token" required>
-        <input type="text" name="s" placeholder="Twilio Allowed SenderID" required>
+        <input type="text" name="senderID" placeholder="Twilio Allowed SenderID" required>
         <button type="submit">Register</button>
     </form>
     <a href="login.jsp" class="login-link">Already have an account? Login here</a>
