@@ -99,8 +99,8 @@
             <input type="text" id="verificationCode" name="verificationCode"
                    placeholder="Enter your code" required>
         </div>
-        <button type="submit" class="verify-btn">Verify</button>
-        <button type="button" class="send-code-btn" onclick="sendCode()">Send Code</button>
+        <button type="submit" name="action" value="verifyCode" >Verify</button>
+        <button type="submit" name="action" value="sendCode">Send Code</button>
     </form>
     <p class="message">
         Didn't receive the code?

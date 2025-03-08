@@ -28,7 +28,7 @@ public class TwilioVerificationServlet extends HttpServlet {
 
         System.out.println("Action: " + action);
         System.out.println("Phone: " + phone);
-        if ("sendCode".equals(action)) {
+        if ("sendCode".equals(action) || action==null  ) {
             // Generate a 4-digit random verification code
             int verificationCode = (int) (Math.random() * 9000) + 1000;
             session.setAttribute("verificationCode", String.valueOf(verificationCode));
@@ -46,30 +46,24 @@ public class TwilioVerificationServlet extends HttpServlet {
                     String senderId = rs.getString("twilio_sender_id"); 
                     String token = rs.getString("twilio_auth_token");
                     
-                    if ("sendCode".equals(action)) {
-                        sendTwilioMessage(phone, "Your verification code is: " + verificationCode, token, accountSid, senderId);
-                        response.getWriter().println("Verification code sent to " + phone);
-                        response.sendRedirect("sendSms.jsp?phone=" + phone);
-                    } else if ("verifyCode".equals(action)) {
-                        String userCode = request.getParameter("code");
-                        String sessionCode = (String) session.getAttribute("verificationCode");
-
-                        if (sessionCode != null && sessionCode.equals(userCode)) {
-                            if (!phone.startsWith("+")) {
-                                phone = phone.trim();
-                                phone = "+".concat(phone);
-                            }
-                            sendTwilioMessage(phone, "Hello! Your number has been verified. This is your Twilio message.", token, accountSid, senderId);
-                            response.getWriter().println("Message sent successfully!");
-                        } else {
-                            response.getWriter().println("Invalid verification code. Please try again.");
-                        }
-                    }
+                    sendTwilioMessage(phone, "Your verification code is: " + verificationCode, token, accountSid, senderId);
+                    response.getWriter().println("Verification code sent to " + phone);
+                    response.sendRedirect("verificationCode.jsp?phone=" + phone);
                 } else {
                     response.getWriter().println("No Twilio credentials found for this user.");
                 }
             } catch (SQLException e) {
                 response.getWriter().println("Database error: " + e.getMessage());
+            }
+        } else if ("verifyCode".equals(action)) {
+            String userCode = request.getParameter("code");
+            String sessionCode = (String) session.getAttribute("verificationCode");
+            String storedPhone = (String) session.getAttribute("phone");
+
+            if (sessionCode != null && sessionCode.equals(userCode)) {
+                response.sendRedirect("smsSend.jsp");
+            } else {
+                response.sendRedirect("verificationCode.jsp?error=invalid");
             }
         }
     }
