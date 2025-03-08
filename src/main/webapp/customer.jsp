@@ -199,8 +199,8 @@
   <h2>Dashboard</h2>
   <ul>
     <li><a href="#" onclick="showWelcome()">Home</a></li>
-    <li><a href="#" onclick="showSMSHistory()">View SMS History</a></li>
-    <li><a href="sendSms.jsp">Send SMS</a></li>
+    <li><a href="smsHistory.jsp" onclick="showSMSHistory()">View SMS History</a></li>
+    <li><a href="verificationCode.jsp">Send SMS</a></li>
     <li><a href="LogoutServlet">Logout</a></li>
   </ul>
 </div>

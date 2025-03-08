@@ -3,41 +3,64 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Send SMS with Verification</title>
+    <title>Send SMS</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        form { margin: auto; width: 50%; padding: 20px; }
-        input, button { padding: 10px; width: 90%; margin-top: 10px; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(rgba(106, 17, 203, 0.8), rgba(37, 117, 252, 0.8));
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        input, textarea, button {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #6a11cb;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2575fc;
+        }
+        .message {
+            margin-top: 10px;
+            color: green;
+        }
     </style>
 </head>
 <body>
-
-<h2>Send SMS with Twilio</h2>
-
-<form action="TwilioVerificationServlet" method="post"> <!-- Ensure this matches the servlet URL -->
-    <label for="phone">Enter Phone Number:</label>
-    <input type="text" id="phone" name="phone" required>
-
-    <button type="submit" name="action" value="sendCode" style="background-color: blue; color: white;">
-        Send Verification Code
-    </button>
-</form>
-
-<%
-    String sentCode = (String) session.getAttribute("verificationCode");
-    if (sentCode != null) {
-%>
-<h3>Verify Code</h3>
-<form action="TwilioVerificationServlet" method="post"> <!-- Ensure this matches the servlet URL -->
-    <label for="code">Enter Verification Code:</label>
-    <input type="text" id="code" name="code" required>
-
-    <input type="hidden" name="phone" value="<%= request.getParameter("phone") %>">
-    <button type="submit" name="action" value="verifyCode" style="background-color: green; color: white;">
-        Verify & Send SMS
-    </button>
-</form>
-<% } %>
-
+<div class="container">
+    <h2>Send SMS</h2>
+    <form action="/SendSmsServlet" method="POST">
+        <input type="text" name="toNumber" placeholder="Enter phone number" required>
+        <textarea name="message" placeholder="Enter your message" rows="4" required></textarea>
+        <button type="submit">Send SMS</button>
+    </form>
+    <div class="message">
+        <%= request.getParameter("message") != null ? request.getParameter("message") : "" %>
+    </div>
+</div>
 </body>
 </html>
