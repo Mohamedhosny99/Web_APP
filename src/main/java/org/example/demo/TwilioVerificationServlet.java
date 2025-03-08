@@ -35,61 +35,53 @@ public class TwilioVerificationServlet extends HttpServlet {
             session.setAttribute("phone", phone);
 
             // Send verification code via Twilio
-            sendTwilioMessage(phone, "Your verification code is: " + verificationCode);
+            try (Connection conn = DBConnection.DBconnection.getConnection()) {
+                String sql = "SELECT twilio_account_sid, twilio_sender_id, twilio_auth_token FROM customer WHERE user_id = ?";
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                if(userId != null) { stmt.setInt(1, userId); }
+                ResultSet rs = stmt.executeQuery();
 
-            response.getWriter().println("Verification code sent to " + phone);
-            response.sendRedirect("sendSms.jsp?phone=" + phone);
-        } else if ("verifyCode".equals(action)) {
-            String userCode = request.getParameter("code");
-            String sessionCode = (String) session.getAttribute("verificationCode");
+                if (rs.next()) {
+                    String accountSid = rs.getString("twilio_account_sid");
+                    String senderId = rs.getString("twilio_sender_id"); 
+                    String token = rs.getString("twilio_auth_token");
+                    
+                    if ("sendCode".equals(action)) {
+                        sendTwilioMessage(phone, "Your verification code is: " + verificationCode, token, accountSid, senderId);
+                        response.getWriter().println("Verification code sent to " + phone);
+                        response.sendRedirect("sendSms.jsp?phone=" + phone);
+                    } else if ("verifyCode".equals(action)) {
+                        String userCode = request.getParameter("code");
+                        String sessionCode = (String) session.getAttribute("verificationCode");
 
-
-            if (sessionCode != null && sessionCode.equals(userCode)) {
-                // Fetch Twilio credentials from database
-                try (Connection conn = DBConnection.DBconnection.getConnection()) {
-                    String sql = "SELECT twilio_account_sid, twilio_sender_id, twilio_auth_token FROM customer WHERE user_id = ?";
-                    PreparedStatement stmt = conn.prepareStatement(sql);
-                    if(userId != null) { stmt.setInt(1, userId);}
-                   // Debug log
-                    ResultSet rs = stmt.executeQuery();
-
-                    if (rs.next()) {
-                        String accountSid = rs.getString("twilio_account_sid");
-                        String senderId = rs.getString("twilio_sender_id");
-                        String token = rs.getString("twilio_auth_token");
-                        Twilio.init(accountSid, token);
-
-
-                        if (!phone.startsWith("+")) {
-                            phone =phone.trim();
-                            phone = "+".concat(phone);
+                        if (sessionCode != null && sessionCode.equals(userCode)) {
+                            if (!phone.startsWith("+")) {
+                                phone = phone.trim();
+                                phone = "+".concat(phone);
+                            }
+                            sendTwilioMessage(phone, "Hello! Your number has been verified. This is your Twilio message.", token, accountSid, senderId);
+                            response.getWriter().println("Message sent successfully!");
+                        } else {
+                            response.getWriter().println("Invalid verification code. Please try again.");
                         }
-                        sendTwilioMessage(phone, "Hello! Your number has been verified. This is your Twilio message.");
-
-
-                        response.getWriter().println("Message sent successfully! " );
-
-                    } else {
-                        System.out.println("No records found for phone: " + phone); // Debug log
-                        response.getWriter().println("No Twilio credentials found for this user.");
                     }
-                } catch (SQLException e) {
-                    response.getWriter().println("Database error: " + e.getMessage());
+                } else {
+                    response.getWriter().println("No Twilio credentials found for this user.");
                 }
-            } else {
-                response.getWriter().println("Invalid verification code. Please try again.");
+            } catch (SQLException e) {
+                response.getWriter().println("Database error: " + e.getMessage());
             }
         }
     }
-
-    private void sendTwilioMessage(String to, String messageBody) {
+    private void sendTwilioMessage(String to, String messageBody , String tokin , String accSID ,String senderID ) {
         // Send SMS via Twilio (using a generic Twilio account)
-        Twilio.init("ACb02f9960b50f9a4f93eabf442fbab419", "e79a2755123d18c303b5dbb0c2b931db");
+        Twilio.init(accSID, tokin);
 
         Message.creator(
                 new PhoneNumber(to),
-                new PhoneNumber("+18313185673"),
+                new PhoneNumber(senderID),
                 messageBody
         ).create();
     }
+
 }
