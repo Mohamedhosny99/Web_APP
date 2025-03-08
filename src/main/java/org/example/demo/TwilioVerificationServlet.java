@@ -73,7 +73,7 @@ public class TwilioVerificationServlet extends HttpServlet {
             }
         }
     }
-    private void sendTwilioMessage(String to, String messageBody , String tokin , String accSID ,String senderID ) {
+    static void sendTwilioMessage(String to, String messageBody, String tokin, String accSID, String senderID) {
         // Send SMS via Twilio (using a generic Twilio account)
         Twilio.init(accSID, tokin);
 
@@ -83,5 +83,6 @@ public class TwilioVerificationServlet extends HttpServlet {
                 messageBody
         ).create();
     }
+
 
 }
