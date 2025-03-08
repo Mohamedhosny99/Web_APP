@@ -53,6 +53,7 @@
 <body>
 <div class="container">
     <h2>Send SMS</h2>
+    <h2>SEND SMS NOW !</h2>
     <form action="/SendSmsServlet" method="POST">
         <input type="text" name="toNumber" placeholder="Enter phone number" required>
         <textarea name="message" placeholder="Enter your message" rows="4" required></textarea>
