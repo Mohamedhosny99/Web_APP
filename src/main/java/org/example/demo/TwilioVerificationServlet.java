@@ -43,7 +43,7 @@ public class TwilioVerificationServlet extends HttpServlet {
             if (sessionCode != null && sessionCode.equals(userCode)) {
                 // Fetch Twilio credentials from database
                 try (Connection conn = DBConnection.DBconnection.getConnection()) {
-                    String sql = "SELECT twilio_account_sid, twilio_sender_id FROM customer WHERE phone_number = ?";
+                    String sql = "SELECT twilio_account_sid, twilio_sender_id FROM customer WHERE twilio_sender_id = ?";
                     PreparedStatement stmt = conn.prepareStatement(sql);
                     stmt.setString(1, phone);
                     ResultSet rs = stmt.executeQuery();
