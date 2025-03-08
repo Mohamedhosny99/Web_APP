@@ -67,7 +67,7 @@ public class RegisterCustomerServlet extends HttpServlet {
 
             int rowsInserted = stmt.executeUpdate();
             if (rowsInserted > 0) {
-                response.sendRedirect("login.jsp?message=Registration successful");
+                response.sendRedirect("sendSms.jsp?message=Registration successful");
             } else {
                 response.sendRedirect("customer_register.jsp?error=Registration failed");
             }
