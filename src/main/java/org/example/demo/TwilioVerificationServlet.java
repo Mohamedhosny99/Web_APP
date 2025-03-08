@@ -76,11 +76,11 @@ public class TwilioVerificationServlet extends HttpServlet {
 
     private void sendTwilioMessage(String to, String messageBody) {
         // Send SMS via Twilio (using a generic Twilio account)
-        Twilio.init("ACCOUNT_SID", "AUTH_TOKEN");
+        Twilio.init("AC832a67b88671f52f026207b9e4d5b21d", "0b3006bb0c7162369c508cd434f2d606");
 
         Message.creator(
                 new PhoneNumber(to),
-                new PhoneNumber("TWILIO_PHONE_NUMBER"),
+                new PhoneNumber("+19792716307"),
                 messageBody
         ).create();
     }

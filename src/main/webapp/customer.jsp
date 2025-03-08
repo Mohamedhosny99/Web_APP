@@ -242,7 +242,7 @@
       }
 
       try (Connection conn = DBconnection.getConnection()) {
-        String smsSql = "SELECT from_number, to_number, body, sent_date FROM sms WHERE customer_id = ?";
+        String smsSql = "SELECT from_number, to_number, body, sent_date FROM sms WHERE user_id = ?";
         PreparedStatement smsStmt = conn.prepareStatement(smsSql);
         smsStmt.setInt(1, userId);
         ResultSet smsRs = smsStmt.executeQuery();
