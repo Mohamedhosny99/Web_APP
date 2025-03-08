@@ -30,7 +30,7 @@ public class LoginServlet extends HttpServlet {
             if (rs.next()) {
                 int userId = rs.getInt("user_id");
                 String type = rs.getString("type");
-
+                System.err.println(userId);
                 HttpSession session = request.getSession();
                 session.setAttribute("userId", userId);
                 session.setAttribute("username", username);
