@@ -98,6 +98,7 @@
             <label for="verificationCode">Enter Verification Code:</label>
             <input type="text" id="verificationCode" name="verificationCode"
                    placeholder="Enter your code" required>
+            <input type="hidden" name="phone" value="<%= session.getAttribute("phone") %>">
         </div>
         <button type="submit" name="action" value="verifyCode" >Verify</button>
         <button type="submit" name="action" value="sendCode">Send Code</button>

@@ -200,7 +200,13 @@
   <ul>
     <li><a href="#" onclick="showWelcome()">Home</a></li>
     <li><a href="smsHistory.jsp" onclick="showSMSHistory()">View SMS History</a></li>
-    <li><a href="TwilioVerificationServlet">Send SMS</a></li>
+    <li>
+        <form action="TwilioVerificationServlet" method="POST" style="display: inline;">
+            <input type="hidden" name="phone" value="<%= session.getAttribute("phone") %>">
+            <input type="hidden" name="action" value="sendCode">
+            <a href="#" onclick="this.parentNode.submit(); return false;">Send SMS</a>
+        </form>
+    </li>
     <li><a href="LogoutServlet">Logout</a></li>
   </ul>
 </div>

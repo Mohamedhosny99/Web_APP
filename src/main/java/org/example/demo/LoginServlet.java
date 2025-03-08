@@ -34,11 +34,24 @@ public class LoginServlet extends HttpServlet {
                 HttpSession session = request.getSession();
                 session.setAttribute("userId", userId);
                 session.setAttribute("username", username);
+              
                 session.setAttribute("type", type);
 
                 if ("admin".equals(type)) {
                     response.sendRedirect("adminDashboard.jsp");
                 } else {
+
+                    String sql2 = "SELECT phone_number FROM customer  WHERE  user_id = ? ";
+                    PreparedStatement stmt2 = conn.prepareStatement(sql2);
+                    stmt2.setInt(1, userId);
+                     ResultSet rs2 = stmt2.executeQuery();
+                     if (rs2.next()){
+                       String  phone = rs2.getString(1) ;
+                       session.setAttribute("phone", phone);
+
+                     }
+
+                    session.setAttribute("phone", rs2.getString("phone_number"));
                     response.sendRedirect("customer.jsp");
                 }
             } else {

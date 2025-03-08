@@ -60,9 +60,9 @@ public class SendSmsServlet extends HttpServlet {
             }
 
             System.out.println("hello");
-
             // Send SMS via Twilio
-            TwilioVerificationServlet.sendTwilioMessage(toNumber, messageBody, authToken, accountSid, senderId);
+            TwilioVerificationServlet twilioServlet = new TwilioVerificationServlet();
+            twilioServlet.sendTwilioMessage(toNumber, messageBody, authToken, accountSid, senderId);
             response.sendRedirect("SmsHistoryServlet");
         } catch (SQLException e) {
             response.sendRedirect("sendSms.jsp?error=Database error: " + e.getMessage());

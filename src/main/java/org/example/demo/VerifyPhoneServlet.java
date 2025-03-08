@@ -54,7 +54,8 @@ public class VerifyPhoneServlet extends HttpServlet {
                 session.setAttribute("phone", phone);
 
                 // Send verification code via Twilio
-                TwilioVerificationServlet.sendTwilioMessage(phone, "Your verification code is: " + verificationCode, authToken, accountSid, senderId);
+                TwilioVerificationServlet twilioServlet = new TwilioVerificationServlet();
+                twilioServlet.sendTwilioMessage(phone, "Your verification code is: " + verificationCode, authToken, accountSid, senderId);
                 response.sendRedirect("verificationCode.jsp");
             } else {
                 response.sendRedirect("enterPhone.jsp?error=User not found in the database.");
