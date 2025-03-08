@@ -102,6 +102,7 @@
         <input type="password" name="password" placeholder="Password" required>
         <button type="submit">Login</button>
     </form>
+    <br>
     <a href="customer_register.jsp">Create an Account</a>
 
     <div class="footer">&copy; 2025 Twilio SMS Client</div>
