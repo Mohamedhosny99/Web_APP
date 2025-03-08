@@ -59,6 +59,8 @@ public class SendSmsServlet extends HttpServlet {
                 belongsStmt.executeUpdate();
             }
 
+            System.out.println("hello");
+
             // Send SMS via Twilio
             TwilioVerificationServlet.sendTwilioMessage(toNumber, messageBody, authToken, accountSid, senderId);
             response.sendRedirect("SmsHistoryServlet");
