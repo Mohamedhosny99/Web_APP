@@ -4,12 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Administrator Registration</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        form { width: 300px; margin: auto; }
-        input { width: 100%; padding: 8px; margin: 5px 0; }
-        button { background-color: darkred; color: white; padding: 10px; width: 100%; }
-    </style>
+    <link rel="stylesheet" type="text/css" href="Stylesheet/RegStyle.css">
 </head>
 <body>
 <h2>Administrator Registration</h2>
