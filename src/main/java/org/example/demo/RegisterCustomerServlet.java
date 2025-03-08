@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,11 +16,11 @@ public class RegisterCustomerServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String username = request.getParameter("username");
+        String username = request.getParameter("name");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String phone = request.getParameter("phone");
-        String job = request.getParameter("job");
+        String job = request.getParameter("role");
         String birthday = request.getParameter("birthday");
         String address = request.getParameter("address");
         String twilioSID = request.getParameter("twilioSID");
@@ -39,7 +40,8 @@ public class RegisterCustomerServlet extends HttpServlet {
         System.out.println("Sender ID: " + senderID);
 
         try (Connection conn = DBConnection.DBconnection.getConnection()) {
-            String sql = "INSERT INTO customer(username, email, password, phone_number, job, address, birthday, twilio_account_sid, twilio_sender_id,twilio_auth_token) VALUES (?,?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO customer(username, email, password, phone_number, job, address, birthday, " +
+                        "twilio_sid, twilio_token, sender_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, username);
             stmt.setString(2, email);
@@ -49,11 +51,8 @@ public class RegisterCustomerServlet extends HttpServlet {
             stmt.setString(6, address);
             stmt.setDate(7, java.sql.Date.valueOf(birthday));
             stmt.setString(8, twilioSID);
-            stmt.setString(9, senderID);
-            stmt.setString(10, twilioToken);
-
-
-
+            stmt.setString(9, twilioToken);
+            stmt.setString(10, senderID);
 
             int rowsInserted = stmt.executeUpdate();
             if (rowsInserted > 0) {
