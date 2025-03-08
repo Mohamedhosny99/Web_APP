@@ -25,6 +25,7 @@ public class TwilioVerificationServlet extends HttpServlet {
         String phone = request.getParameter("phone");
         Integer userId = session.getAttribute("userId") != null ? (Integer) session.getAttribute("userId") : null;
         System.out.println(userId);
+
         System.out.println("Action: " + action);
         System.out.println("Phone: " + phone);
         if ("sendCode".equals(action)) {
@@ -66,7 +67,8 @@ public class TwilioVerificationServlet extends HttpServlet {
                         sendTwilioMessage(phone, "Hello! Your number has been verified. This is your Twilio message.");
 
 
-                        response.getWriter().println("Message sent successfully! SID: " );
+                        response.getWriter().println("Message sent successfully! " );
+
                     } else {
                         System.out.println("No records found for phone: " + phone); // Debug log
                         response.getWriter().println("No Twilio credentials found for this user.");
