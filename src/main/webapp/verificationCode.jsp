@@ -96,7 +96,7 @@
     <form id="verificationForm" action="/TwilioVerificationServlet" method="POST">
         <div class="form-group">
             <label for="verificationCode">Enter Verification Code:</label>
-            <input type="text" id="verificationCode" name="verificationCode"
+            <input type="text" id="code" name="code"
                    placeholder="Enter your code" required>
             <input type="hidden" name="phone" value="<%= session.getAttribute("phone") %>">
         </div>

@@ -42,6 +42,7 @@ public class TwilioVerificationServlet extends HttpServlet {
                 // Generate a 4-digit random verification code
                 int verificationCode = (int) (Math.random() * 9000) + 1000;
                 session.setAttribute("verificationCode", String.valueOf(verificationCode));
+              //  session.setAttribute("code", String.valueOf(verificationCode));
                 session.setAttribute("phone", phone);
 
                 // Send verification code via Twilio
@@ -82,7 +83,7 @@ public class TwilioVerificationServlet extends HttpServlet {
         } else if ("verifyCode".equals(action)) {
             String userCode = request.getParameter("code");
             String sessionCode = (String) session.getAttribute("verificationCode");
-            System.out.println("Code: " + sessionCode);
+            System.out.println("Code: " + userCode);
             if (sessionCode != null && sessionCode.equals(userCode)) {
                 if (!phone.startsWith("+")) {
                     phone = phone.trim();
