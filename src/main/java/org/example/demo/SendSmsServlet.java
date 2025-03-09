@@ -28,6 +28,10 @@ public class SendSmsServlet extends HttpServlet {
         String accountSid = (String) session.getAttribute("twilio_account_sid");
         String senderId = (String) session.getAttribute("twilio_sender_id");
         String authToken = (String) session.getAttribute("twilio_auth_token");
+        System.out.println("-----------send sms-------------------");
+        System.out.println("acc sid "+ accountSid);
+        System.out.println("send id "+ senderId);
+        System.out.println("token "+ authToken);
 
         if (accountSid == null || senderId == null || authToken == null) {
             response.sendRedirect("sendSms.jsp?error=Twilio credentials not found. Please verify your phone number.");
@@ -35,6 +39,14 @@ public class SendSmsServlet extends HttpServlet {
         }
 
         try (Connection conn = DBConnection.DBconnection.getConnection()) {
+            /*
+            *
+             web_app=# select * from sms;
+             sms_id | user_id | from_number | to_number | body | sent_date | inbound
+            --------+---------+-------------+-----------+------+-----------+---------
+            (0 rows)
+            * */
+
             // Insert into sms table
             String smsSql = "INSERT INTO sms (user_id, from_number, to_number, body, sent_date, inbound) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement smsStmt = conn.prepareStatement(smsSql, PreparedStatement.RETURN_GENERATED_KEYS);
