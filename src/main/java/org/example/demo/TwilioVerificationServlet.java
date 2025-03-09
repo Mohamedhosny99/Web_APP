@@ -61,6 +61,10 @@ public class TwilioVerificationServlet extends HttpServlet {
                         String senderId = rs.getString("twilio_sender_id");
                         String token = rs.getString("twilio_auth_token");
 
+                        System.out.println("acc sid: "+ accountSid);
+                        System.out.println("sender id: "+ senderId);
+                        System.out.println("token: "+ token);
+
                         // Validate Twilio credentials
                         if (accountSid == null || senderId == null || token == null) {
                             throw new SQLException("Invalid Twilio credentials in database");
@@ -101,6 +105,8 @@ public class TwilioVerificationServlet extends HttpServlet {
                         String token = rs.getString("twilio_auth_token");
                         sendTwilioMessage(phone, "Hello! Your number has been verified. This is your Twilio message.", token, accountSid, senderId);
                         response.getWriter().println("Message sent successfully!");
+                        String path="/smsSend.jsp";
+                            response.sendRedirect(path);
                     }
                 } catch (SQLException e) {
                     System.err.println("Database error: " + e.getMessage());
@@ -111,8 +117,8 @@ public class TwilioVerificationServlet extends HttpServlet {
             }
         }
     }
-
-    void sendTwilioMessage(String to, String messageBody, String tokin, String accSID, String senderID) {
+        //HASHEEL EL STATIC JUST FOR TESTING
+    static void sendTwilioMessage(String to, String messageBody, String tokin, String accSID, String senderID) {
         try {
             // Validate all required parameters
             if (to == null || messageBody == null || tokin == null || accSID == null || senderID == null) {

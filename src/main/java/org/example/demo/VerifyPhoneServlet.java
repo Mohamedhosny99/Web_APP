@@ -27,10 +27,14 @@ public class VerifyPhoneServlet extends HttpServlet {
         try (Connection conn = DBConnection.DBconnection.getConnection()) {
             // Fetch the user's phone number and Twilio credentials from the customer table
             String sql = "SELECT phone_number, twilio_account_sid, twilio_sender_id, twilio_auth_token FROM customer WHERE user_id = ?";
+
+
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
-
+            System.out.println("-----------check sql query-----------");
+            System.out.println("Executing SQL query: " + sql);
+            System.out.println("With user_id: " + userId);
             if (rs.next()) {
                 String phone = rs.getString("phone_number");
                 String accountSid = rs.getString("twilio_account_sid");
@@ -38,6 +42,7 @@ public class VerifyPhoneServlet extends HttpServlet {
                 String authToken = rs.getString("twilio_auth_token");
 
                 // Debug logs
+                System.out.println("Fetched Twilio credentials from the database:");
                 System.out.println("Account SID: " + accountSid);
                 System.out.println("Auth Token: " + authToken);
                 System.out.println("Sender ID: " + senderId);
@@ -48,14 +53,18 @@ public class VerifyPhoneServlet extends HttpServlet {
                     return;
                 }
 
+                // Store Twilio credentials in the session
+                session.setAttribute("twilio_account_sid", accountSid);
+                session.setAttribute("twilio_sender_id", senderId);
+                session.setAttribute("twilio_auth_token", authToken);
+                session.setAttribute("phone", phone);
+
                 // Generate a 4-digit random verification code
                 int verificationCode = (int) (Math.random() * 9000) + 1000;
                 session.setAttribute("verificationCode", String.valueOf(verificationCode));
-                session.setAttribute("phone", phone);
 
                 // Send verification code via Twilio
-                TwilioVerificationServlet twilioServlet = new TwilioVerificationServlet();
-                twilioServlet.sendTwilioMessage(phone, "Your verification code is: " + verificationCode, authToken, accountSid, senderId);
+                TwilioVerificationServlet.sendTwilioMessage(phone, "Your verification code is: " + verificationCode, authToken, accountSid, senderId);
                 response.sendRedirect("verificationCode.jsp");
             } else {
                 response.sendRedirect("enterPhone.jsp?error=User not found in the database.");

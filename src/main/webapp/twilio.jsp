@@ -1,46 +1,46 @@
-<%--&lt;%&ndash;<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>&ndash;%&gt;--%>
-<%--&lt;%&ndash;<!DOCTYPE html>&ndash;%&gt;--%>
-<%--&lt;%&ndash;<html>&ndash;%&gt;--%>
-<%--&lt;%&ndash;<head>&ndash;%&gt;--%>
-<%--&lt;%&ndash;    <meta charset="UTF-8">&ndash;%&gt;--%>
-<%--&lt;%&ndash;    <title>Send SMS with Verification</title>&ndash;%&gt;--%>
-<%--&lt;%&ndash;    <style>&ndash;%&gt;--%>
-<%--&lt;%&ndash;        body { font-family: Arial, sans-serif; text-align: center; }&ndash;%&gt;--%>
-<%--&lt;%&ndash;        form { margin: auto; width: 50%; padding: 20px; }&ndash;%&gt;--%>
-<%--&lt;%&ndash;        input, button { padding: 10px; width: 90%; margin-top: 10px; }&ndash;%&gt;--%>
-<%--&lt;%&ndash;    </style>&ndash;%&gt;--%>
-<%--&lt;%&ndash;</head>&ndash;%&gt;--%>
-<%--&lt;%&ndash;<body>&ndash;%&gt;--%>
+<%--<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>--%>
+<%--<!DOCTYPE html>--%>
+<%--<html>--%>
+<%--<head>--%>
+<%--    <meta charset="UTF-8">--%>
+<%--    <title>Send SMS with Verification</title>--%>
+<%--    <style>--%>
+<%--        body { font-family: Arial, sans-serif; text-align: center; }--%>
+<%--        form { margin: auto; width: 50%; padding: 20px; }--%>
+<%--        input, button { padding: 10px; width: 90%; margin-top: 10px; }--%>
+<%--    </style>--%>
+<%--</head>--%>
+<%--<body>--%>
 
-<%--&lt;%&ndash;<h2>Send SMS with Twilio</h2>&ndash;%&gt;--%>
+<%--<h2>Send SMS with Twilio</h2>--%>
 
-<%--&lt;%&ndash;<form action="TwilioVerificationServlet" method="post">&ndash;%&gt;--%>
-<%--&lt;%&ndash;    <label for="phone">Enter Phone Number:</label>&ndash;%&gt;--%>
-<%--&lt;%&ndash;    <input type="text" id="phone" name="phone" required>&ndash;%&gt;--%>
+<%--<form action="TwilioVerificationServlet" method="post">--%>
+<%--    <label for="phone">Enter Phone Number:</label>--%>
+<%--    <input type="text" id="phone" name="phone" required>--%>
 
-<%--&lt;%&ndash;    <button type="submit" name="action" value="sendCode" style="background-color: blue; color: white;">&ndash;%&gt;--%>
-<%--&lt;%&ndash;        Send Verification Code&ndash;%&gt;--%>
-<%--&lt;%&ndash;    </button>&ndash;%&gt;--%>
-<%--&lt;%&ndash;</form>&ndash;%&gt;--%>
+<%--    <button type="submit" name="action" value="sendCode" style="background-color: blue; color: white;">--%>
+<%--        Send Verification Code--%>
+<%--    </button>--%>
+<%--</form>--%>
 
-<%--&lt;%&ndash;&lt;%&ndash;%>--%>
-<%--&lt;%&ndash;    String sentCode = (String) session.getAttribute("verificationCode");&ndash;%&gt;--%>
-<%--&lt;%&ndash;    if (sentCode != null) {&ndash;%&gt;--%>
-<%--&lt;%&ndash;%>&ndash;%&gt;--%>
-<%--&lt;%&ndash;<h3>Verify Code</h3>&ndash;%&gt;--%>
-<%--&lt;%&ndash;<form action="TwilioVerificationServlet" method="post">&ndash;%&gt;--%>
-<%--&lt;%&ndash;    <label for="code">Enter Verification Code:</label>&ndash;%&gt;--%>
-<%--&lt;%&ndash;    <input type="text" id="code" name="code" required>&ndash;%&gt;--%>
+<%--<%--%>
+<%--    String sentCode = (String) session.getAttribute("verificationCode");--%>
+<%--    if (sentCode != null) {--%>
+<%--%>--%>
+<%--<h3>Verify Code</h3>--%>
+<%--<form action="TwilioVerificationServlet" method="post">--%>
+<%--    <label for="code">Enter Verification Code:</label>--%>
+<%--    <input type="text" id="code" name="code" required>--%>
 
-<%--&lt;%&ndash;    <input type="hidden" name="phone" value="<%= request.getParameter("phone") %>">&ndash;%&gt;--%>
-<%--&lt;%&ndash;    <button type="submit" name="action" value="verifyCode" style="background-color: green; color: white;">&ndash;%&gt;--%>
-<%--&lt;%&ndash;        Verify & Send SMS&ndash;%&gt;--%>
-<%--&lt;%&ndash;    </button>&ndash;%&gt;--%>
-<%--&lt;%&ndash;</form>&ndash;%&gt;--%>
-<%--&lt;%&ndash;<% } %>&ndash;%&gt;--%>
+<%--    <input type="hidden" name="phone" value="<%= request.getParameter("phone") %>">--%>
+<%--    <button type="submit" name="action" value="verifyCode" style="background-color: green; color: white;">--%>
+<%--        Verify & Send SMS--%>
+<%--    </button>--%>
+<%--</form>--%>
+<%--<% } %>--%>
 
-<%--&lt;%&ndash;</body>&ndash;%&gt;--%>
-<%--&lt;%&ndash;</html>&ndash;%&gt;--%>
+<%--</body>--%>
+<%--</html>--%>
 
 <%--<!DOCTYPE html>--%>
 <%--<html lang="en">--%>
@@ -239,5 +239,49 @@
 <%--        document.getElementById('message').textContent = `Verification code sent to ${phoneNumber}`;--%>
 <%--    });--%>
 <%--</script>--%>
+<%--</body>--%>
+<%--</html>--%>
+
+<%--<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>--%>
+<%--<!DOCTYPE html>--%>
+<%--<html>--%>
+<%--<head>--%>
+<%--    <meta charset="UTF-8">--%>
+<%--    <title>Send SMS with Verification</title>--%>
+<%--    <style>--%>
+<%--        body { font-family: Arial, sans-serif; text-align: center; }--%>
+<%--        form { margin: auto; width: 50%; padding: 20px; }--%>
+<%--        input, button { padding: 10px; width: 90%; margin-top: 10px; }--%>
+<%--    </style>--%>
+<%--</head>--%>
+<%--<body>--%>
+
+<%--<h2>Send SMS with Twilio</h2>--%>
+
+<%--<form action="TwilioVerificationServlet" method="post">--%>
+<%--    <label for="phone">Enter Phone Number:</label>--%>
+<%--    <input type="text" id="phone" name="phone" required>--%>
+
+<%--    <button type="submit" name="action" value="sendCode" style="background-color: blue; color: white;">--%>
+<%--        Send Verification Code--%>
+<%--    </button>--%>
+<%--</form>--%>
+
+<%--<%--%>
+<%--    String sentCode = (String) session.getAttribute("verificationCode");--%>
+<%--    if (sentCode != null) {--%>
+<%--%>--%>
+<%--<h3>Verify Code</h3>--%>
+<%--<form action="TwilioVerificationServlet" method="post">--%>
+<%--    <label for="code">Enter Verification Code:</label>--%>
+<%--    <input type="text" id="code" name="code" required>--%>
+
+<%--    <input type="hidden" name="phone" value="<%= request.getParameter("phone") %>">--%>
+<%--    <button type="submit" name="action" value="verifyCode" style="background-color: green; color: white;">--%>
+<%--        Verify & Send SMS--%>
+<%--    </button>--%>
+<%--</form>--%>
+<%--<% } %>--%>
+
 <%--</body>--%>
 <%--</html>--%>
