@@ -52,7 +52,7 @@ public class LoginServlet extends HttpServlet {
                      }
 
                     session.setAttribute("phone", rs2.getString("phone_number"));
-                    response.sendRedirect("customer.jsp");
+                    response.sendRedirect("home.jsp");
                 }
             } else {
                 response.sendRedirect("login.jsp?error=Invalid credentials");

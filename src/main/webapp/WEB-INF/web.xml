@@ -20,4 +20,8 @@
         <listener-class>DBConnection.DBconnection</listener-class>
     </listener>
 
+    <session-config>
+        <session-timeout>43200</session-timeout> <!-- Timeout in minutes -->
+    </session-config>
+
 </web-app>

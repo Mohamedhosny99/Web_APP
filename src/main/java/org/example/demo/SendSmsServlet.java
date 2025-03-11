@@ -28,34 +28,23 @@ public class SendSmsServlet extends HttpServlet {
         String accountSid = (String) session.getAttribute("twilio_account_sid");
         String senderId = (String) session.getAttribute("twilio_sender_id");
         String authToken = (String) session.getAttribute("twilio_auth_token");
-        System.out.println("-----------send sms-------------------");
-        System.out.println("acc sid "+ accountSid);
-        System.out.println("send id "+ senderId);
-        System.out.println("token "+ authToken);
 
         if (accountSid == null || senderId == null || authToken == null) {
-            response.sendRedirect("sendSms.jsp?error=Twilio credentials not found. Please verify your phone number.");
+            response.sendRedirect("smsSend.jsp?error=Twilio credentials not found. Please verify your phone number.");
             return;
         }
 
         try (Connection conn = DBConnection.DBconnection.getConnection()) {
-            /*
-            *
-             web_app=# select * from sms;
-             sms_id | user_id | from_number | to_number | body | sent_date | inbound
-            --------+---------+-------------+-----------+------+-----------+---------
-            (0 rows)
-            * */
-
             // Insert into sms table
-            String smsSql = "INSERT INTO sms (user_id, from_number, to_number, body, sent_date, inbound) VALUES (?, ?, ?, ?, ?, ?)";
+            String smsSql = "INSERT INTO sms (user_id, from_number, to_number, body, sent_date, inbound, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement smsStmt = conn.prepareStatement(smsSql, PreparedStatement.RETURN_GENERATED_KEYS);
             smsStmt.setInt(1, userId);
-            smsStmt.setString(2, session.getAttribute("phone").toString());
+            smsStmt.setString(2, senderId);
             smsStmt.setString(3, toNumber);
             smsStmt.setString(4, messageBody);
             smsStmt.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
             smsStmt.setBoolean(6, false); // Outbound message
+            smsStmt.setString(7, "success"); // Default status is "success"
             smsStmt.executeUpdate();
 
             // Get the generated sms_id
@@ -71,15 +60,13 @@ public class SendSmsServlet extends HttpServlet {
                 belongsStmt.executeUpdate();
             }
 
-            System.out.println("hello");
             // Send SMS via Twilio
-            TwilioVerificationServlet twilioServlet = new TwilioVerificationServlet();
-            twilioServlet.sendTwilioMessage(toNumber, messageBody, authToken, accountSid, senderId);
+            TwilioVerificationServlet.sendTwilioMessage(toNumber, messageBody, authToken, accountSid, senderId);
             response.sendRedirect("SmsHistoryServlet");
         } catch (SQLException e) {
-            response.sendRedirect("sendSms.jsp?error=Database error: " + e.getMessage());
-        } catch (IOException e) {
-            response.sendRedirect("sendSms.jsp?error=Failed to send SMS: " + e.getMessage());
+            response.sendRedirect("smsSend.jsp?error=Database error: " + e.getMessage());
+        } catch (Exception e) {
+            response.sendRedirect("smsSend.jsp?error=Failed to send SMS: " + e.getMessage());
         }
     }
 }
