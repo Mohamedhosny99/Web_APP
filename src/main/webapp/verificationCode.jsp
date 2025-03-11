@@ -1,112 +1,270 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Verification Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Code</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* General Reset */
+        * {
             margin: 0;
-            padding: 20px;
-            background-color: #f0f2f5;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .container {
-            max-width: 400px;
-            margin: 50px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
-            text-align: center;
-            color: #1a73e8;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(rgba(106, 17, 203, 0.8), rgba(37, 117, 252, 0.8)); /* Gradient overlay on background image */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
             color: #333;
         }
-        input[type="text"] {
+
+        /* Header Styles */
+        header {
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        header nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        header nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        header nav a:hover {
+            color: #6a11cb;
+        }
+
+        /* Main Content Styles */
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 1s ease-in-out;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #6a11cb;
+            font-size: 28px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-group input {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
+            border-radius: 5px;
             font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.9);
+            transition: border-color 0.3s ease;
         }
-        .verify-btn, .send-code-btn {
-            width: 100%;
+
+        .form-group input:focus {
+            border-color: #6a11cb;
+            outline: none;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .buttons button {
+            flex: 1;
             padding: 12px;
-            color: white;
             border: none;
-            border-radius: 4px;
-            cursor: pointer;
+            border-radius: 5px;
             font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
             transition: background-color 0.3s ease;
-            margin-bottom: 10px; /* Add spacing between buttons */
         }
-        .verify-btn {
-            background-color: #1a73e8;
+
+        .buttons button.verify {
+            background-color: #6a11cb;
+            color: #fff;
         }
-        .verify-btn:hover {
-            background-color: #1557b0;
+
+        .buttons button.resend {
+            background-color: #28a745;
+            color: #fff;
         }
-        .verify-btn:active {
-            background-color: #104080;
+
+        .buttons button:hover {
+            opacity: 0.9;
         }
-        .send-code-btn {
-            background-color: #28a745; /* Green color for the Send Code button */
-        }
-        .send-code-btn:hover {
-            background-color: #218838;
-        }
-        .send-code-btn:active {
-            background-color: #1e7e34;
-        }
-        .message {
+
+        /* Footer Styles */
+        footer {
+            width: 100%;
+            padding: 15px 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
             text-align: center;
-            margin-top: 10px;
-            color: #666;
+            font-size: 14px;
+            color: #fff;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .message a {
-            color: #1a73e8;
+
+        footer a {
+            color: #fff;
             text-decoration: none;
+            transition: color 0.3s ease;
         }
-        .message a:hover {
-            text-decoration: underline;
+
+        footer a:hover {
+            color: #6a11cb;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            header nav {
+                gap: 10px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .buttons button {
+                width: 100%;
+            }
         }
     </style>
     <script>
-        function sendCode() {
-            // Submit the form to the
-            document.getElementById("verificationForm").action = "/VerifyPhoneServlet";
-            document.getElementById("verificationForm").method = "POST";
-            document.getElementById("verificationForm").submit();
+        function resendCode() {
+            const form = document.getElementById("verificationForm");
+            form.action = "/TwilioVerificationServlet";
+            form.method = "POST";
+
+            // Add hidden input for action
+            const actionInput = document.createElement("input");
+            actionInput.type = "hidden";
+            actionInput.name = "action";
+            actionInput.value = "sendCode";
+            form.appendChild(actionInput);
+
+            // Add hidden input for phone
+            const phoneInput = document.createElement("input");
+            phoneInput.type = "hidden";
+            phoneInput.name = "phone";
+            phoneInput.value = "<%= session.getAttribute("phone") %>";
+            form.appendChild(phoneInput);
+
+            form.submit();
         }
     </script>
 </head>
 <body>
+<!-- Header -->
+<header>
+    <h1>Verification Code</h1>
+    <nav>
+        <a href="home.jsp">Home</a>
+        <a href="login.jsp">Logout</a>
+    </nav>
+</header>
+
+<!-- Main Content -->
 <div class="container">
-    <h2>Verification</h2>
-    <form id="verificationForm" action="/TwilioVerificationServlet" method="POST">
-        <div class="form-group">
-            <label for="verificationCode">Enter Verification Code:</label>
-            <input type="text" id="code" name="code"
-                   placeholder="Enter your code" required>
+    <div class="card">
+        <h2>Enter Verification Code</h2>
+        <form id="verificationForm" action="/TwilioVerificationServlet" method="POST">
+            <div class="form-group">
+                <label for="codeInput">Verification Code</label>
+                <input type="text" id="codeInput" name="code" placeholder="Enter verification code" required>
+            </div>
+            <!-- Add hidden input for phone -->
             <input type="hidden" name="phone" value="<%= session.getAttribute("phone") %>">
-        </div>
-        <button type="submit" name="action" value="verifyCode" >Verify</button>
-        <button type="submit" name="action" value="sendCode">Send Code</button>
-    </form>
-    <p class="message">
-        Didn't receive the code?
-        <a href="resendCode">Resend Code</a>
-    </p>
+            <input type="hidden" name="action" value="verifyCode"> <!-- Hidden input for action -->
+            <div class="buttons">
+                <button type="submit" class="verify">Verify</button>
+                <button type="button" class="resend" onclick="resendCode()">Resend Code</button>
+            </div>
+        </form>
+    </div>
 </div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 Twilio sms client. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+</footer>
 </body>
 </html>

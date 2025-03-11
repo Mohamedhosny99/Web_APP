@@ -1,77 +1,9 @@
-<!-- <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Send SMS</title>
-<style>
-body {
-font-family: Arial, sans-serif;
-background: linear-gradient(rgba(106, 17, 203, 0.8), rgba(37, 117, 252, 0.8));
-background-size: cover;
-display: flex;
-justify-content: center;
-align-items: center;
-height: 100vh;
-margin: 0;
-}
-.container {
-background-color: rgba(255, 255, 255, 0.9);
-padding: 20px;
-border-radius: 10px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-width: 300px;
-text-align: center;
-}
-h2 {
-margin-bottom: 20px;
-color: #333;
-}
-input, textarea, button {
-width: 80%;
-padding: 10px;
-margin: 10px 0;
-border: 1px solid #ddd;
-border-radius: 5px;
-font-size: 14px;
-}
-button {
-background-color: #6a11cb;
-color: white;
-border: none;
-cursor: pointer;
-}
-button:hover {
-background-color: #2575fc;
-}
-.message {
-margin-top: 10px;
-color: green;
-}
-</style>
-</head>
-<body>
-<div class="container">
-<h2>Send SMS</h2>
-<h2>SEND SMS NOW !</h2>
-<form action="/SendSmsServlet" method="POST">
-<input type="text" name="toNumber" placeholder="Enter phone number" required>
-<textarea name="message" placeholder="Enter your message" rows="4" required></textarea>
-<button type="submit">Send SMS</button>
-</form>
-<div class="message">
-<%= request.getParameter("message") != null ? request.getParameter("message") : "" %>
-</div>
-</div>
-</body>
-</html> -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Send SMS</title>
+    <title>Customer Profile</title>
     <style>
         /* General Reset */
         * {
@@ -136,14 +68,14 @@ color: green;
 
         .card {
             background-color: rgba(255, 255, 255, 0.95);
-            padding: 30px;
+            padding: 40px;
             border-radius: 15px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             animation: fadeIn 1s ease-in-out;
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
             text-align: center;
         }
 
@@ -161,62 +93,16 @@ color: green;
         h2 {
             margin-bottom: 20px;
             color: #6a11cb;
-            font-size: 28px;
+            font-size: 36px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
+        p {
             color: #555;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            background-color: rgba(255, 255, 255, 0.9);
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            border-color: #6a11cb;
-            outline: none;
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #6a11cb;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn:hover {
-            background-color: #2575fc;
+            font-size: 18px;
+            line-height: 1.6;
         }
 
         /* Footer Styles */
@@ -257,7 +143,11 @@ color: green;
             }
 
             h2 {
-                font-size: 24px;
+                font-size: 28px;
+            }
+
+            p {
+                font-size: 16px;
             }
         }
     </style>
@@ -265,29 +155,31 @@ color: green;
 <body>
 <!-- Header -->
 <header>
-    <h1>Send SMS</h1>
+    <h1>Customer Profile</h1>
     <nav>
-        <a href="home.jsp">Home</a>
-        <a href="smsHistory.jsp">SMS History</a>
-        <a href="login.jsp">Logout</a>
+
+        <ul><li><a href="home.jsp">Home</a></li></ul>
+        <ul>
+            <li>
+                <form action="TwilioVerificationServlet" method="POST" style="display: inline;">
+                    <input type="hidden" name="phone" value="<%= session.getAttribute("phone") %>">
+                    <input type="hidden" name="action" value="sendCode">
+                    <a href="#" onclick="this.parentNode.submit(); return false;">Send SMS</a>
+                </form>
+            </li>
+        </ul>
+      <ul><li><a href="smsHistory.jsp">SMS History</a></li></ul>
+        <ul><li><a href="login.jsp">Logout</a></li></ul>
     </nav>
 </header>
 
 <!-- Main Content -->
 <div class="container">
     <div class="card">
-        <h2>Send SMS</h2>
-        <form id="sendSMSForm"  action="/SendSmsServlet" method="POST">
-            <div class="form-group">
-                <label >To</label>
-                <input type="text" name="toNumber" placeholder="Enter phone number" required>
-            </div>
-            <div class="form-group">
-                <label >Message</label>
-                <textarea name="message" placeholder="Enter your message" rows="4" required></textarea>
-            </div>
-            <button type="submit" class="btn">Send SMS</button>
-        </form>
+        <h2>Hello in Your Profile</h2>
+        <p>
+            Welcome to your customer profile! You can navigate to different sections using the links in the header.
+        </p>
     </div>
 </div>
 
@@ -295,7 +187,5 @@ color: green;
 <footer>
     <p>&copy; 2025 Twilio sms Client. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
 </footer>
-
-
 </body>
 </html>

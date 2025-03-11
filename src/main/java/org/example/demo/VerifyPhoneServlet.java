@@ -25,35 +25,19 @@ public class VerifyPhoneServlet extends HttpServlet {
         }
 
         try (Connection conn = DBConnection.DBconnection.getConnection()) {
-            // Fetch the user's phone number and Twilio credentials from the customer table
+            // Fetch the user's phone number and Twilio credentials
             String sql = "SELECT phone_number, twilio_account_sid, twilio_sender_id, twilio_auth_token FROM customer WHERE user_id = ?";
-
-
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
-            System.out.println("-----------check sql query-----------");
-            System.out.println("Executing SQL query: " + sql);
-            System.out.println("With user_id: " + userId);
+
             if (rs.next()) {
                 String phone = rs.getString("phone_number");
                 String accountSid = rs.getString("twilio_account_sid");
                 String senderId = rs.getString("twilio_sender_id");
                 String authToken = rs.getString("twilio_auth_token");
 
-                // Debug logs
-                System.out.println("Fetched Twilio credentials from the database:");
-                System.out.println("Account SID: " + accountSid);
-                System.out.println("Auth Token: " + authToken);
-                System.out.println("Sender ID: " + senderId);
-                System.out.println("Phone: " + phone);
-
-                if (accountSid == null || authToken == null || senderId == null) {
-                    response.sendRedirect("enterPhone.jsp?error=Twilio credentials are missing or invalid. Please contact support.");
-                    return;
-                }
-
-                // Store Twilio credentials in the session
+                // Store Twilio credentials and phone in the session
                 session.setAttribute("twilio_account_sid", accountSid);
                 session.setAttribute("twilio_sender_id", senderId);
                 session.setAttribute("twilio_auth_token", authToken);
