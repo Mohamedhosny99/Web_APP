@@ -1,79 +1,117 @@
 package org.example.demo;
 
-import DBConnection.DBconnection;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import DBConnection.DBconnection;
+import models.SmsRecord;
 
-@WebServlet("/smsHistory")
+@WebServlet("/SmsHistoryServlet")
 public class SmsHistoryServlet extends HttpServlet {
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+    private static final long serialVersionUID = 1L;
 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user_id") == null) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not logged in.");
+        if (session == null || session.getAttribute("userId") == null) {
+            response.sendRedirect("login.jsp");
             return;
         }
 
-        int userId = (int) session.getAttribute("user_id"); // Get logged-in user ID
+        int userId = (Integer) session.getAttribute("userId");
+        List<SmsRecord> smsList = new ArrayList<>();
+
+        // Retrieve search parameters from request
         String fromNumber = request.getParameter("from");
         String toNumber = request.getParameter("to");
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
+        String startDateStr = request.getParameter("startDate");
+        String endDateStr = request.getParameter("endDate");
         String body = request.getParameter("body");
 
-        try (Connection conn = DBconnection.getConnection()) {
-            StringBuilder query = new StringBuilder("SELECT sms_id, from_number, to_number, body, sent_date, inbound, status FROM sms WHERE user_id = ?");
-            if (fromNumber != null && !fromNumber.isEmpty()) query.append(" AND from_number ILIKE ?");
-            if (toNumber != null && !toNumber.isEmpty()) query.append(" AND to_number ILIKE ?");
-            if (startDate != null && !startDate.isEmpty()) query.append(" AND sent_date >= ?");
-            if (endDate != null && !endDate.isEmpty()) query.append(" AND sent_date <= ?");
-            if (body != null && !body.isEmpty()) query.append(" AND body ILIKE ?");
+        // Convert date strings to java.sql.Date
+        java.sql.Date startDate = null;
+        java.sql.Date endDate = null;
 
-            try (PreparedStatement stmt = conn.prepareStatement(query.toString())) {
-                int paramIndex = 1;
-                stmt.setInt(paramIndex++, userId);
-                if (fromNumber != null && !fromNumber.isEmpty()) stmt.setString(paramIndex++, "%" + fromNumber + "%");
-                if (toNumber != null && !toNumber.isEmpty()) stmt.setString(paramIndex++, "%" + toNumber + "%");
-                if (startDate != null && !startDate.isEmpty()) stmt.setString(paramIndex++, startDate);
-                if (endDate != null && !endDate.isEmpty()) stmt.setString(paramIndex++, endDate);
-                if (body != null && !body.isEmpty()) stmt.setString(paramIndex++, "%" + body + "%");
+        try {
+            if (startDateStr != null && !startDateStr.isEmpty()) {
+                startDate = java.sql.Date.valueOf(startDateStr);
+            }
+            if (endDateStr != null && !endDateStr.isEmpty()) {
+                endDate = java.sql.Date.valueOf(endDateStr);
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            request.setAttribute("errorMessage", "Invalid date format.");
+            request.getRequestDispatcher("smsHistory.jsp").forward(request, response);
+            return;
+        }
 
-                ResultSet rs = stmt.executeQuery();
-                JSONArray smsArray = new JSONArray();
+        // Construct the dynamic SQL query
+        StringBuilder query = new StringBuilder("SELECT user_id, to_number, from_number, body, sent_date, inbound, status FROM sms WHERE user_id = ?");
+        List<Object> parameters = new ArrayList<>();
+        parameters.add(userId);
 
-                while (rs.next()) {
-                    JSONObject sms = new JSONObject();
-                    sms.put("sms_id", rs.getInt("sms_id"));
-                    sms.put("from_number", rs.getString("from_number"));
-                    sms.put("to_number", rs.getString("to_number"));
-                    sms.put("body", rs.getString("body"));
-                    sms.put("sent_date", rs.getString("sent_date"));
-                    sms.put("inbound", rs.getBoolean("inbound") ? "Yes" : "No");
-                    sms.put("status", rs.getString("status"));
-                    smsArray.put(sms);
-                }
+        if (fromNumber != null && !fromNumber.trim().isEmpty()) {
+            query.append(" AND from_number LIKE ?");
+            parameters.add("%" + fromNumber.trim() + "%");
+        }
 
-                PrintWriter out = response.getWriter();
-                out.print(smsArray);
-                out.flush();
+        if (toNumber != null && !toNumber.trim().isEmpty()) {
+            query.append(" AND to_number LIKE ?");
+            parameters.add("%" + toNumber.trim() + "%");
+        }
+
+        if (startDate != null) {
+            query.append(" AND sent_date >= ?");
+            parameters.add(startDate);
+        }
+
+        if (endDate != null) {
+            query.append(" AND sent_date <= ?");
+            parameters.add(endDate);
+        }
+
+        if (body != null && !body.trim().isEmpty()) {
+            query.append(" AND body ILIKE ?");  // ILIKE makes search case-insensitive
+            parameters.add("%" + body.trim() + "%");
+        }
+
+        // Execute the query
+        try (Connection conn = DBconnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query.toString())) {
+
+            // Bind parameters dynamically
+            for (int i = 0; i < parameters.size(); i++) {
+                stmt.setObject(i + 1, parameters.get(i));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                smsList.add(new SmsRecord(
+                        rs.getInt("user_id"),
+                        rs.getString("to_number"),
+                        rs.getString("from_number"),
+                        rs.getString("body"),
+                        rs.getString("sent_date"),
+                        rs.getBoolean("inbound"),
+                        rs.getString("status")
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error");
         }
+
+        // Attach the filtered list to the request
+        request.setAttribute("smsList", smsList);
+        request.getRequestDispatcher("smsHistory.jsp").forward(request, response);
     }
 }
