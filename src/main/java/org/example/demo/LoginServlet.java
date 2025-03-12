@@ -13,6 +13,11 @@ import javax.servlet.http.HttpSession;
 import DBConnection.DBconnection.*;
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
+
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String path1 = "/login.jsp";
+        response.sendRedirect(path1);
+    }
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -61,5 +66,7 @@ public class LoginServlet extends HttpServlet {
             e.printStackTrace();
             response.sendRedirect("login.jsp?error=Database error");
         }
+
+
     }
 }

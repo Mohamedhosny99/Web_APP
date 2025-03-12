@@ -168,7 +168,7 @@
                 </form>
             </li>
         </ul>
-      <ul><li><a href="smsHistory.jsp">SMS History</a></li></ul>
+      <ul><li><a href="/SmsHistoryServlet">SMS History</a></li></ul>
         <ul><li><a href="login.jsp">Logout</a></li></ul>
     </nav>
 </header>
