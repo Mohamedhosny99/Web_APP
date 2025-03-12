@@ -286,6 +286,7 @@
 <header>
     <h1>List SMS</h1>
     <nav>
+        <a href="list-user.jsp"><<</a>
         <a href="adminDashboard.jsp">Home</a>
         <a href="login.jsp">Logout</a>
     </nav>
