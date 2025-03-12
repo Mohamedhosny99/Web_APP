@@ -77,7 +77,7 @@ public class TwilioServlet extends HttpServlet {
                         "Your verification code is: " + verificationCode
                 ).create();
                 
-                response.sendRedirect("twilio.jsp");
+//                response.sendRedirect("twilio.jsp");
                 
             } else if ("verifyCode".equals(action)) {
                 String submittedCode = request.getParameter("code");

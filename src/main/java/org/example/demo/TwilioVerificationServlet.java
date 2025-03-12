@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.twilio.Twilio;
+import com.twilio.exception.AuthenticationException; // Correct import
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 
@@ -72,10 +73,13 @@ public class TwilioVerificationServlet extends HttpServlet {
                 }
             } catch (SQLException e) {
                 System.err.println("Database error: " + e.getMessage());
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error: " + e.getMessage());
+                response.sendRedirect("home.jsp?error=Database error: " + e.getMessage());
+            } catch (AuthenticationException e) { // Correct exception
+                System.err.println("Error sending Twilio message: " + e.getMessage());
+                response.sendRedirect("home.jsp?error=Trial ended");
             } catch (Exception e) {
                 System.err.println("Error sending verification code: " + e.getMessage());
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error sending verification code: " + e.getMessage());
+                response.sendRedirect("home.jsp?error=Failed to send verification code: " + e.getMessage());
             }
         } else if ("verifyCode".equals(action)) {
             String userCode = request.getParameter("code");
@@ -99,7 +103,13 @@ public class TwilioVerificationServlet extends HttpServlet {
                     }
                 } catch (SQLException e) {
                     System.err.println("Database error: " + e.getMessage());
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error: " + e.getMessage());
+                    response.sendRedirect("home.jsp?error=Database error: " + e.getMessage());
+                } catch (AuthenticationException e) { // Correct exception
+                    System.err.println("Error sending Twilio message: " + e.getMessage());
+                    response.sendRedirect("home.jsp?error=Failed to send Twilio message: Authentication error");
+                } catch (Exception e) {
+                    System.err.println("Error sending verification code: " + e.getMessage());
+                    response.sendRedirect("home.jsp?error=Failed to send verification code: " + e.getMessage());
                 }
             } else {
                 response.getWriter().println("Invalid verification code. Please try again.");
@@ -107,7 +117,7 @@ public class TwilioVerificationServlet extends HttpServlet {
         }
     }
 
-    static void sendTwilioMessage(String to, String messageBody, String token, String accountSid, String senderID) {
+    static void sendTwilioMessage(String to, String messageBody, String token, String accountSid, String senderID) throws AuthenticationException {
         try {
             // Initialize Twilio
             Twilio.init(accountSid, token);
@@ -120,6 +130,9 @@ public class TwilioVerificationServlet extends HttpServlet {
             ).create();
 
             System.out.println("Message sent successfully with SID: " + message.getSid());
+        } catch (AuthenticationException e) {
+            System.err.println("Authentication error sending Twilio message: " + e.getMessage());
+            throw e;
         } catch (Exception e) {
             System.err.println("Error sending Twilio message: " + e.getMessage());
             throw new RuntimeException("Failed to send Twilio message", e);

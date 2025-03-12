@@ -182,6 +182,35 @@
             color: #555;
         }
 
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .actions button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .actions button.edit {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .actions button.delete {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .actions button:hover {
+            opacity: 0.9;
+        }
+
         /* Footer Styles */
         footer {
             width: 100%;
@@ -241,6 +270,15 @@
             th, td {
                 padding: 10px;
             }
+
+            .actions {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .actions button {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -248,7 +286,7 @@
 <header>
     <h1>List SMS</h1>
     <nav>
-        <a href="home.jsp">Home</a>
+        <a href="adminDashboard.jsp">Home</a>
         <a href="login.jsp">Logout</a>
     </nav>
 </header>
@@ -258,8 +296,8 @@
         <div class="search-bar">
             <input type="text" id="fromInput" placeholder="Search by From...">
             <input type="text" id="toInput" placeholder="Search by To...">
-            <input type="date" id="startDate" placeholder="Start Date">
-            <input type="date" id="endDate" placeholder="End Date">
+            <input type="date" id="startDate">
+            <input type="date" id="endDate">
             <input type="text" id="bodyInput" placeholder="Search by Body...">
             <button id="searchButton">Search</button>
         </div>
@@ -285,17 +323,19 @@
                     if (userId == null) {
                         out.println("<tr><td colspan='7' style='text-align: center; color: red;'>User not logged in</td></tr>");
                     } else {
-                        conn = DBConnection.DBconnection.getConnection();
-                        String sql = "SELECT user_id, to_number, from_number, body, sent_date, inbound, status FROM sms WHERE user_id = ?";
-                        stmt = conn.prepareStatement(sql);
-                        stmt.setInt(1, userId);
-                        rs = stmt.executeQuery();
-                        boolean hasData = false;
-                        while (rs.next()) {
-                            hasData = true;
+                        conn = DBconnection.getConnection();
+                        if (conn != null) {
+                            String sql = "SELECT user_id, to_number, from_number, body, sent_date, inbound, status FROM sms WHERE user_id = ?";
+                            stmt = conn.prepareStatement(sql);
+                            stmt.setInt(1, userId);
+                            rs = stmt.executeQuery();
+                            boolean hasData = false;
+                            while (rs.next()) {
+                                hasData = true;
+//                                 session.setAttribute("user_id",userId);
             %>
             <tr>
-                <td><%= rs.getInt("user_id") %></td>
+                <td id="user-id"><%= rs.getInt("user_id") %></td>
                 <td><%= rs.getString("to_number") %></td>
                 <td><%= rs.getString("from_number") %></td>
                 <td><%= rs.getString("body") %></td>
@@ -304,9 +344,12 @@
                 <td><%= rs.getString("status") %></td>
             </tr>
             <%
-                        }
-                        if (!hasData) {
-                            out.println("<tr><td colspan='7' style='text-align: center; color: gray;'>No SMS records found</td></tr>");
+                            }
+                            if (!hasData) {
+                                out.println("<tr><td colspan='7' style='text-align: center; color: gray;'>No SMS records found</td></tr>");
+                            }
+                        } else {
+                            out.println("<tr><td colspan='7' style='text-align: center; color: red;'>Database connection failed</td></tr>");
                         }
                     }
                 } catch (SQLException e) {
@@ -345,6 +388,13 @@
             row.style.display = matchesFrom && matchesTo && matchesBody && matchesDate ? '' : 'none';
         }
     });
+
+    // Fetch user ID dynamically from the table
+    const userIdElement = document.getElementById("user-id");
+    if (userIdElement) {
+        const userId = userIdElement.textContent.trim();
+        console.log("User ID:", userId);
+    }
 </script>
 </body>
 </html>
