@@ -256,16 +256,12 @@
         <td class="actions">
           <script>
             function setUserAndRedirect(userId, username, userType) {
-              // Using AJAX to set session attributes
-              fetch('SetUserSessionServlet', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `userId=${userId}&username=${username}&userType=${userType}`
-              }).then(() => {
-                window.location.href = 'list-user-sms.jsp';
-              });
+                // Encode parameters to handle special characters
+                const encodedUsername = encodeURIComponent(username);
+                const encodedUserType = encodeURIComponent(userType);
+                
+                // Redirect with parameters in URL
+                window.location.href = `list-user-sms.jsp?userId=${userId}&username=${encodedUsername}&userType=${encodedUserType}`;
             }
           </script>
           <button onclick="setUserAndRedirect(<%= userId %>, '<%= username %>', '<%= userType %>')">View SMS History</button>
