@@ -1,5 +1,7 @@
 package model;
 
+import java.sql.Timestamp;
+
 public class SmsRecord {
     private int userId;
     private String to;
@@ -18,6 +20,7 @@ public class SmsRecord {
         this.inbound = inbound;
         this.status = status;
     }
+    public SmsRecord(){}
 
     public int getUserId() { return userId; }
     public String getTo() { return to; }
@@ -26,4 +29,32 @@ public class SmsRecord {
     public String getDate() { return date; }
     public boolean isInbound() { return inbound; }
     public String getStatus() { return status; }
+
+
+    public void setUserId(int id) {
+        this.userId=id;
+    }
+
+    public void setBody(String body) {
+        this.body=body;
+    }
+
+    public void setDate(String timestamp) {
+    }
+
+    public void setTo(String toNumber) {
+        this.to= toNumber;
+    }
+
+    public void setFrom(String fromNumber) {
+        this.from= fromNumber;
+    }
+
+    public void setInbound(boolean inbound) {
+        this.inbound=inbound;
+    }
+
+    public void setStatus(String s) {
+        this.status=s;
+    }
 }

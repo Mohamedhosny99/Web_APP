@@ -28,7 +28,7 @@ public class ListUserServlet extends HttpServlet {
             String userID = request.getParameter("userID");
 
             // Base Query
-            String userSQL = "SELECT user_id, username, type FROM users WHERE type = 'customer'";
+            String userSQL = "SELECT user_id, username FROM customer";
 
             // Applying Filters Dynamically
             List<String> filters = new ArrayList<>();
@@ -40,7 +40,7 @@ public class ListUserServlet extends HttpServlet {
             }
 
             if (!filters.isEmpty()) {
-                userSQL += " AND " + String.join(" AND ", filters);
+                userSQL += " WHERE " + String.join(" AND ", filters);
             }
 
             pstmt = conn.prepareStatement(userSQL);
@@ -56,7 +56,7 @@ public class ListUserServlet extends HttpServlet {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                userList.add(new User(rs.getInt("user_id"), rs.getString("username"), rs.getString("type")));
+                userList.add(new User(rs.getInt("user_id"), rs.getString("username")));
             }
 
             request.setAttribute("userList", userList);
