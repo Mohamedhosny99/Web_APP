@@ -89,6 +89,7 @@ public class TwilioVerificationServlet extends HttpServlet {
             if (sessionCode != null && sessionCode.equals(userCode)) {
                 try (Connection conn = DBConnection.DBconnection.getConnection()) {
                     String sql = "SELECT twilio_account_sid, twilio_sender_id, twilio_auth_token FROM customer WHERE user_id = ?";
+                    String smsSQL = "INSERT INTO sms (tatus) VALUES (?) WHERE user_id=?";
                     PreparedStatement stmt = conn.prepareStatement(sql);
                     stmt.setInt(1, userId);
                     ResultSet rs = stmt.executeQuery();
@@ -111,6 +112,7 @@ public class TwilioVerificationServlet extends HttpServlet {
                 } catch (Exception e) {
                     System.err.println("Error sending verification code: " + e.getMessage());
                     response.sendRedirect("home.jsp?error=Failed to send verification code: " + e.getMessage());
+
                 }
             } else {
                 response.getWriter().println("Invalid verification code. Please try again.");

@@ -297,8 +297,7 @@
         <th>User ID</th>
         <th>Name</th>
        <th>Action</th>
-        <th>Edit User</th>
-        <th>Delete User</th>
+
       </tr>
       </thead>
       <tbody>
@@ -318,17 +317,6 @@
           </form>
         </td>
 
-        <td  class="actions">
-          <form>
-            <button type="submit" class="edit">Edit</button>
-          </form>
-        </td>
-
-        <td class="actions">
-          <form>
-            <button type="submit" class="delete">Delete</button>
-          </form>
-        </td>
 
 
       </tr>
