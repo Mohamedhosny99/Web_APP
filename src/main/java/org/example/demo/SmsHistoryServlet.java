@@ -1,71 +1,79 @@
 package org.example.demo;
 
+import DBConnection.DBconnection;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-@WebServlet("/SmsHistoryServlet")
+@WebServlet("/smsHistory")
 public class SmsHistoryServlet extends HttpServlet {
-    private static final Logger LOGGER = Logger.getLogger(SmsHistoryServlet.class.getName());
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        HttpSession session = request.getSession();
-        Integer userId = (Integer) session.getAttribute("user_id");
-
-        if (userId == null) {
-            response.sendRedirect("login.jsp?error=Please login to view SMS history.");
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user_id") == null) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not logged in.");
             return;
         }
 
-        List<Map<String, String>> smsHistory = new ArrayList<>();
+        int userId = (int) session.getAttribute("user_id"); // Get logged-in user ID
+        String fromNumber = request.getParameter("from");
+        String toNumber = request.getParameter("to");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String body = request.getParameter("body");
 
-        try (Connection conn = DBConnection.DBconnection.getConnection()) {
-            String sql = "SELECT from_number, to_number, body, sent_date, inbound, status " +
-                    "FROM sms WHERE user_id = ? ORDER BY sent_date DESC";
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, userId);
-                try (ResultSet rs = stmt.executeQuery()) {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    while (rs.next()) {
-                        Map<String, String> sms = new HashMap<>();
-                        sms.put("fromNumber", rs.getString("from_number"));
-                        sms.put("toNumber", rs.getString("to_number"));
-                        sms.put("body", rs.getString("body")); // Use "body" instead of "message"
-                        sms.put("sentDate", rs.getTimestamp("sent_date") != null
-                                ? dateFormat.format(rs.getTimestamp("sent_date"))
-                                : "N/A");
-                        sms.put("inbound", rs.getBoolean("inbound") ? "Yes" : "No");
-                        sms.put("status", rs.getString("status") != null ? rs.getString("status") : "Unknown");
-                        smsHistory.add(sms);
-                    }
+        try (Connection conn = DBconnection.getConnection()) {
+            StringBuilder query = new StringBuilder("SELECT sms_id, from_number, to_number, body, sent_date, inbound, status FROM sms WHERE user_id = ?");
+            if (fromNumber != null && !fromNumber.isEmpty()) query.append(" AND from_number ILIKE ?");
+            if (toNumber != null && !toNumber.isEmpty()) query.append(" AND to_number ILIKE ?");
+            if (startDate != null && !startDate.isEmpty()) query.append(" AND sent_date >= ?");
+            if (endDate != null && !endDate.isEmpty()) query.append(" AND sent_date <= ?");
+            if (body != null && !body.isEmpty()) query.append(" AND body ILIKE ?");
+
+            try (PreparedStatement stmt = conn.prepareStatement(query.toString())) {
+                int paramIndex = 1;
+                stmt.setInt(paramIndex++, userId);
+                if (fromNumber != null && !fromNumber.isEmpty()) stmt.setString(paramIndex++, "%" + fromNumber + "%");
+                if (toNumber != null && !toNumber.isEmpty()) stmt.setString(paramIndex++, "%" + toNumber + "%");
+                if (startDate != null && !startDate.isEmpty()) stmt.setString(paramIndex++, startDate);
+                if (endDate != null && !endDate.isEmpty()) stmt.setString(paramIndex++, endDate);
+                if (body != null && !body.isEmpty()) stmt.setString(paramIndex++, "%" + body + "%");
+
+                ResultSet rs = stmt.executeQuery();
+                JSONArray smsArray = new JSONArray();
+
+                while (rs.next()) {
+                    JSONObject sms = new JSONObject();
+                    sms.put("sms_id", rs.getInt("sms_id"));
+                    sms.put("from_number", rs.getString("from_number"));
+                    sms.put("to_number", rs.getString("to_number"));
+                    sms.put("body", rs.getString("body"));
+                    sms.put("sent_date", rs.getString("sent_date"));
+                    sms.put("inbound", rs.getBoolean("inbound") ? "Yes" : "No");
+                    sms.put("status", rs.getString("status"));
+                    smsArray.put(sms);
                 }
+
+                PrintWriter out = response.getWriter();
+                out.print(smsArray);
+                out.flush();
             }
-
-            request.setAttribute("smsHistory", smsHistory);
-            request.getRequestDispatcher("smsHistory.jsp").forward(request, response);
-
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Database error while fetching SMS history", e);
-            response.sendRedirect("smsHistory.jsp?error=Error retrieving SMS history. Please try again later.");
-        } catch (ServletException e) {
-            LOGGER.log(Level.SEVERE, "Servlet error while forwarding request", e);
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error");
         }
     }
 }
