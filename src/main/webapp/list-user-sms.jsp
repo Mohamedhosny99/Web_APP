@@ -304,6 +304,9 @@
                 <th>Date</th>
                 <th>Inbound</th>
                 <th>Status</th>
+                <th>Edit</th>
+                <th>Delete</th>
+
             </tr>
             </thead>
             <tbody>
@@ -320,6 +323,15 @@
                 <td><%= sms.getDate() %></td>
                 <td><%= sms.isInbound() ? "Yes" : "No" %></td>
                 <td><%= sms.getStatus() %></td>
+                <td  class="actions">
+                    <form>
+                        <button type="submit" class="edit">Edit</button>
+                    </form>
+                </td>
+
+
+
+
             </tr>
             <%
                 }
