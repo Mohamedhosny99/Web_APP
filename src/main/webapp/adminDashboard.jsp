@@ -14,7 +14,7 @@
 
     body {
       font-family: 'Arial', sans-serif;
-      background: linear-gradient(rgba(106, 17, 203, 0.8), rgba(37, 117, 252, 0.8)), url('background.jpg'); /* Gradient overlay on background image */
+      background: linear-gradient(rgba(106, 17, 203, 0.8), rgba(37, 117, 252, 0.8)); /* Gradient overlay on background image */
       background-size: cover;
       background-position: center;
       display: flex;
