@@ -93,7 +93,7 @@ public class TwilioServlet extends HttpServlet {
                     
                     session.removeAttribute("verificationCode");
                     response.getWriter().println("Verification successful! Message sent.");
-                    response.sendRedirect("customer.jsp");
+                    response.sendRedirect("home.jsp");
                 } else {
                     response.getWriter().println("Invalid verification code. Please try again.");
                 }
