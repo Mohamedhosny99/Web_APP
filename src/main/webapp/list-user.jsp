@@ -254,7 +254,21 @@
         <td><%= username %></td>
         <td><%= userType %></td>
         <td class="actions">
-          <button onclick="window.location.href='list-user-sms.jsp?userId=<%= userId %>&username=<%= username %>&type=<%= userType %>'">View SMS History</button>
+          <script>
+            function setUserAndRedirect(userId, username, userType) {
+              // Using AJAX to set session attributes
+              fetch('SetUserSessionServlet', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `userId=${userId}&username=${username}&userType=${userType}`
+              }).then(() => {
+                window.location.href = 'list-user-sms.jsp';
+              });
+            }
+          </script>
+          <button onclick="setUserAndRedirect(<%= userId %>, '<%= username %>', '<%= userType %>')">View SMS History</button>
         </td>
       </tr>
       <%
