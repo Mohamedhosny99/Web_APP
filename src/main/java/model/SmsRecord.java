@@ -40,6 +40,7 @@ public class SmsRecord {
     }
 
     public void setDate(String timestamp) {
+        this.date=timestamp;
     }
 
     public void setTo(String toNumber) {
