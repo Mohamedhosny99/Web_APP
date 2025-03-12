@@ -1,4 +1,4 @@
-package models;
+package model;
 
 public class SmsRecord {
     private int userId;

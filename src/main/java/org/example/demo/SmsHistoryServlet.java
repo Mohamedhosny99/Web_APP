@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import DBConnection.DBconnection;
-import models.SmsRecord;
+import model.SmsRecord;
 
 @WebServlet("/SmsHistoryServlet")
 public class SmsHistoryServlet extends HttpServlet {

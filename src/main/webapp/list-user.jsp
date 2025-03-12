@@ -1,8 +1,5 @@
-<%@ page import="java.sql.Connection" %>
-<%@ page import="DBConnection.DBconnection" %>
-<%@ page import="java.sql.PreparedStatement" %>
-<%@ page import="java.sql.ResultSet" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="model.User" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -158,7 +155,60 @@
     .actions button:hover {
       background-color: #0056b3;
     }
+    .card {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      animation: fadeIn 1s ease-in-out;
+      width: 100%;
+      max-width: 1200px;
+    }
 
+    .card {
+      padding: 20px;
+    }
+    .search-bar {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-bar input,
+    .search-bar input[type="date"] {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      background-color: rgba(255, 255, 255, 0.9);
+      transition: border-color 0.3s ease;
+    }
+
+    .search-bar input:focus,
+    .search-bar input[type="date"]:focus {
+      border-color: #6a11cb;
+      outline: none;
+    }
+
+    .search-bar button {
+      padding: 10px 20px;
+      background-color: #6a11cb;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .search-bar button:hover {
+      background-color: #2575fc;
+    }
     /* Footer Styles */
     footer {
       width: 100%;
@@ -206,6 +256,7 @@
         padding: 10px;
       }
     }
+
   </style>
 
 </head>
@@ -217,9 +268,25 @@
     <a href="login.jsp">Logout</a>
   </nav>
 </header>
+
 <div class="container">
   <div class="card">
     <h2>Users List</h2>
+
+    <!-- Search Form -->
+    <form action="ListUserServlet" method="GET" class="search-bar" >
+      <input type="text" name="username" placeholder="Search by Name...">
+      <input type="text" name="userID" placeholder="Search by ID...">
+      <button type="submit">Search</button>
+      <button type="button" onclick="resetForm()">Back</button>
+    </form>
+
+    <script>
+      function resetForm() {
+        window.location.href = "ListUserServlet"; // Reload page to show all users
+      }
+    </script>
+
     <table>
       <thead>
       <tr>
@@ -230,57 +297,32 @@
       </tr>
       </thead>
       <tbody>
-
       <%
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-
-        try {
-          conn = DBconnection.getConnection();
-          String userSQL = "SELECT user_id, type, username FROM users WHERE type = 'customer'";
-
-          pstmt = conn.prepareStatement(userSQL);
-          rs = pstmt.executeQuery();
-
-          while (rs.next()) {
-            int userId = rs.getInt("user_id");
-
-            String userType = rs.getString("type");
-            String username = rs.getString("username");
+        List<User> userList = (List<User>) request.getAttribute("userList");
+        if (userList != null && !userList.isEmpty()) {
+          for (User user : userList) {
       %>
       <tr>
-        <td><%= userId %></td>
-        <td><%= username %></td>
-        <td><%= userType %></td>
+        <td><%= user.getUserId() %></td>
+        <td><%= user.getUsername() %></td>
+        <td><%= user.getType() %></td>
         <td class="actions">
-          <script>
-            function setUserAndRedirect(userId, username, userType) {
-                // Encode parameters to handle special characters
-                const encodedUsername = encodeURIComponent(username);
-                const encodedUserType = encodeURIComponent(userType);
-                
-                // Redirect with parameters in URL
-                window.location.href = `list-user-sms.jsp?userId=${userId}&username=${encodedUsername}&userType=${encodedUserType}`;
-            }
-          </script>
-          <button onclick="setUserAndRedirect(<%= userId %>, '<%= username %>', '<%= userType %>')">View SMS History</button>
+          <button onclick="setUserAndRedirect(<%= user.getUserId() %>, '<%= user.getUsername() %>', '<%= user.getType() %>')">View SMS History</button>
         </td>
       </tr>
       <%
-          }
-        } catch (Exception e) {
-          e.printStackTrace();
-        } finally {
-          if (rs != null) rs.close();
-          if (pstmt != null) pstmt.close();
-          if (conn != null) conn.close();
+        }
+      } else {
+      %>
+      <tr><td colspan="4">No users found.</td></tr>
+      <%
         }
       %>
       </tbody>
     </table>
   </div>
 </div>
+
 <footer>
   <p>&copy; 2025 Twilio SMS Client. All rights reserved.</p>
 </footer>
