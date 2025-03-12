@@ -293,15 +293,6 @@
 </header>
 <div class="container">
     <div class="card">
-        <%
-            String selectedUsername = (String) session.getAttribute("username");
-            String selectedUserType = (String) session.getAttribute("userType");
-        %>
-        <div class="selected-user-info" style="margin-bottom: 20px; padding: 15px; background: rgba(106, 17, 203, 0.1); border-radius: 8px;">
-            <h3 style="color: #6a11cb; margin-bottom: 10px;">Selected User Details</h3>
-            <p><strong>Username:</strong> <%= selectedUsername != null ? selectedUsername : "Not selected" %></p>
-            <p><strong>User Type:</strong> <%= selectedUserType != null ? selectedUserType : "Not selected" %></p>
-        </div>
         <h2>SMS History</h2>
         <div class="search-bar">
             <input type="text" id="fromInput" placeholder="Search by From...">
@@ -329,7 +320,7 @@
                 PreparedStatement stmt = null;
                 ResultSet rs = null;
                 try {
-                    Integer userId = (Integer) session.getAttribute("userId");
+                    Integer userId = Integer.parseInt(request.getParameter("userId"));
                     if (userId == null) {
                         out.println("<tr><td colspan='7' style='text-align: center; color: red;'>User not logged in</td></tr>");
                     } else {
