@@ -155,6 +155,15 @@
     .actions button:hover {
       background-color: #0056b3;
     }
+    .actions button.delete {
+      background-color: #dc3545;
+      color: #fff;
+    }
+
+    .actions button.edit {
+      background-color: #28a745;
+      color: #fff;
+    }
     .card {
       background-color: rgba(255, 255, 255, 0.95);
       padding: 30px;
@@ -287,7 +296,9 @@
       <tr>
         <th>User ID</th>
         <th>Name</th>
-       <center> <th>Action</th></center>
+       <th>Action</th>
+        <th>Edit User</th>
+        <th>Delete User</th>
       </tr>
       </thead>
       <tbody>
@@ -306,6 +317,20 @@
             <button type="submit">View SMS History</button>
           </form>
         </td>
+
+        <td  class="actions">
+          <form>
+            <button type="submit" class="edit">Edit</button>
+          </form>
+        </td>
+
+        <td class="actions">
+          <form>
+            <button type="submit" class="delete">Delete</button>
+          </form>
+        </td>
+
+
       </tr>
       <%
         }
