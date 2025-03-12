@@ -45,6 +45,7 @@ public class VerifyPhoneServlet extends HttpServlet {
 
                 // Generate a 4-digit random verification code
                 int verificationCode = (int) (Math.random() * 9000) + 1000;
+                System.out.println("Verification code: "+verificationCode);
                 session.setAttribute("verificationCode", String.valueOf(verificationCode));
 
                 // Send verification code via Twilio
