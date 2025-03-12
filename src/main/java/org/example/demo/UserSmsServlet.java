@@ -5,24 +5,21 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.RequestDispatcher;
 import DBConnection.DBconnection;
 import model.SmsRecord;
-
 
 @WebServlet("/UserSmsServlet")
 public class UserSmsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String userId = request.getParameter("user_id");
-        HashMap<String, SmsRecord> smsMap = new HashMap<>();
+        List<SmsRecord> smsList = new ArrayList<>(); // Use List instead of HashMap
 
         if (userId != null && !userId.isEmpty()) {
             try (Connection conn = DBconnection.getConnection()) {
@@ -32,27 +29,25 @@ public class UserSmsServlet extends HttpServlet {
                 ResultSet rs = stmt.executeQuery();
 
                 while (rs.next()) {
-
                     SmsRecord sms = new SmsRecord();
                     sms.setUserId(rs.getInt("user_id"));
                     sms.setTo(rs.getString("to_number"));
                     sms.setFrom(rs.getString("from_number"));
                     sms.setBody(rs.getString("body"));
-                    sms.setDate(rs.getDate("sent_date") != null ? rs.getDate("sent_date").toString() : "N/A");
+                    sms.setDate(rs.getDate("sent_date").toString());
                     sms.setInbound(rs.getBoolean("inbound"));
                     sms.setStatus(rs.getString("status") != null ? rs.getString("status") : "N/A");
 
-                    // Store in HashMap with user_id as key
-                    smsMap.put(userId, sms);
+                    System.out.println("Fetched SMS - To: " + sms.getTo() + ", From: " + sms.getFrom());
+                    System.out.println("Body: \n"+ rs.getString("body"));
+                    System.out.println("Date:\n"+rs.getString("sent_date").toString());
+
+                    // Add each record to the list
+                    smsList.add(sms);
                 }
 
-                while (rs.next()) {
-                    System.out.println("Fetching SMS record for user_id: " + userId);
-                    System.out.println("Message: " + rs.getString("message")); // Debugging
-                }
                 System.out.println("Received user_id: " + userId);
-                System.out.println("SMS Map Size: " + smsMap.size());
-
+                System.out.println("Total SMS Records: " + smsList.size());
 
                 rs.close();
                 stmt.close();
@@ -61,7 +56,7 @@ public class UserSmsServlet extends HttpServlet {
             }
         }
 
-        request.setAttribute("smsMap", smsMap);
+        request.setAttribute("smsList", smsList); // Use List instead of Map
         request.setAttribute("userId", userId);
         request.getRequestDispatcher("list-user-sms.jsp").forward(request, response);
     }
