@@ -158,8 +158,8 @@
   <h1>Admin Dashboard</h1>
   <nav>
     <a href="#">Home</a>
-    <a href="login.jsp">Logout</a>
     <a href="list-user.jsp">List Users</a>
+    <a href="login.jsp">Logout</a>
   </nav>
 </header>
 
