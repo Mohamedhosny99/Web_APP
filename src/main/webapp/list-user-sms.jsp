@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="java.sql.*" %>
-<%@ page import="DBConnection.DBconnection" %>
+<%@ page import="java.util.List" %>
+<%@ page import="model.SmsRecord" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -286,7 +286,7 @@
 <header>
     <h1>List SMS</h1>
     <nav>
-        <a href="list-user.jsp"><<</a>
+        <a href="ListUserServlet"><< Back</a>
         <a href="adminDashboard.jsp">Home</a>
         <a href="login.jsp">Logout</a>
     </nav>
@@ -294,14 +294,6 @@
 <div class="container">
     <div class="card">
         <h2>SMS History</h2>
-        <div class="search-bar">
-            <input type="text" id="fromInput" placeholder="Search by From...">
-            <input type="text" id="toInput" placeholder="Search by To...">
-            <input type="date" id="startDate">
-            <input type="date" id="endDate">
-            <input type="text" id="bodyInput" placeholder="Search by Body...">
-            <button id="searchButton">Search</button>
-        </div>
         <table>
             <thead>
             <tr>
@@ -314,52 +306,27 @@
                 <th>Status</th>
             </tr>
             </thead>
-            <tbody id="smsTableBody">
+            <tbody>
             <%
-                Connection conn = null;
-                PreparedStatement stmt = null;
-                ResultSet rs = null;
-                try {
-                    Integer userId = Integer.parseInt(request.getParameter("userId"));
-                    if (userId == null) {
-                        out.println("<tr><td colspan='7' style='text-align: center; color: red;'>User not logged in</td></tr>");
-                    } else {
-                        conn = DBconnection.getConnection();
-                        if (conn != null) {
-                            String sql = "SELECT user_id, to_number, from_number, body, sent_date, inbound, status FROM sms WHERE user_id = ?";
-                            stmt = conn.prepareStatement(sql);
-                            stmt.setInt(1, userId);
-                            rs = stmt.executeQuery();
-                            boolean hasData = false;
-                            while (rs.next()) {
-                                hasData = true;
-//                                 session.setAttribute("user_id",userId);
+                List<SmsRecord> smsList = (List<SmsRecord>) request.getAttribute("smsList");
+                if (smsList != null && !smsList.isEmpty()) {
+                    for (SmsRecord sms : smsList) {
             %>
             <tr>
-                <td id="user-id"><%= rs.getInt("user_id") %></td>
-                <td><%= rs.getString("to_number") %></td>
-                <td><%= rs.getString("from_number") %></td>
-                <td><%= rs.getString("body") %></td>
-                <td><%= rs.getString("sent_date") %></td>
-                <td><%= rs.getBoolean("inbound") ? "Yes" : "No" %></td>
-                <td><%= rs.getString("status") %></td>
+                <td><%= sms.getUserId() %></td>
+                <td><%= sms.getTo() %></td>
+                <td><%= sms.getFrom() %></td>
+                <td><%= sms.getBody() %></td>
+                <td><%= sms.getDate() %></td>
+                <td><%= sms.isInbound() ? "Yes" : "No" %></td>
+                <td><%= sms.getStatus() %></td>
             </tr>
             <%
-                            }
-                            if (!hasData) {
-                                out.println("<tr><td colspan='7' style='text-align: center; color: gray;'>No SMS records found</td></tr>");
-                            }
-                        } else {
-                            out.println("<tr><td colspan='7' style='text-align: center; color: red;'>Database connection failed</td></tr>");
-                        }
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    out.println("<tr><td colspan='7' style='text-align: center; color: red;'>Error fetching data</td></tr>");
-                } finally {
-                    try { if (rs != null) rs.close(); } catch (SQLException ignored) {}
-                    try { if (stmt != null) stmt.close(); } catch (SQLException ignored) {}
-                    try { if (conn != null) conn.close(); } catch (SQLException ignored) {}
+                }
+            } else {
+            %>
+            <tr><td colspan="7" style="text-align: center; color: red;">No SMS records found.</td></tr>
+            <%
                 }
             %>
             </tbody>
@@ -367,35 +334,7 @@
     </div>
 </div>
 <footer>
-    <p>&copy; 2025 Twilio SMS Client. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    <p>&copy; 2025 SMS Application</p>
 </footer>
-<script>
-    document.getElementById('searchButton').addEventListener('click', () => {
-        const fromTerm = document.getElementById('fromInput').value.toLowerCase();
-        const toTerm = document.getElementById('toInput').value.toLowerCase();
-        const startDateTerm = document.getElementById('startDate').value;
-        const endDateTerm = document.getElementById('endDate').value;
-        const bodyTerm = document.getElementById('bodyInput').value.toLowerCase();
-        const rows = document.getElementById('smsTableBody').getElementsByTagName('tr');
-        for (let row of rows) {
-            const from = row.cells[2].textContent.toLowerCase();
-            const to = row.cells[1].textContent.toLowerCase();
-            const date = row.cells[4].textContent;
-            const body = row.cells[3].textContent.toLowerCase();
-            const matchesFrom = from.includes(fromTerm);
-            const matchesTo = to.includes(toTerm);
-            const matchesBody = body.includes(bodyTerm);
-            const matchesDate = (!startDateTerm || date >= startDateTerm) && (!endDateTerm || date <= endDateTerm);
-            row.style.display = matchesFrom && matchesTo && matchesBody && matchesDate ? '' : 'none';
-        }
-    });
-
-    // Fetch user ID dynamically from the table
-    const userIdElement = document.getElementById("user-id");
-    if (userIdElement) {
-        const userId = userIdElement.textContent.trim();
-        console.log("User ID:", userId);
-    }
-</script>
 </body>
 </html>

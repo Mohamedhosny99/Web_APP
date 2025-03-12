@@ -158,7 +158,7 @@
     <h1>Customer Profile</h1>
     <nav>
 
-        <ul><li><a href="home.jsp">Home</a></li></ul>
+<%--        <ul><li><a href="home.jsp">Home</a></li></ul>--%>
         <ul>
             <li>
                 <form action="TwilioVerificationServlet" method="POST" style="display: inline;">

@@ -157,7 +157,7 @@
 <header>
   <h1>Admin Dashboard</h1>
   <nav>
-    <a href="#">Home</a>
+<%--    <a href="#">Home</a>--%>
     <a href="ListUserServlet">List Users</a>
     <a href="login.jsp">Logout</a>
   </nav>

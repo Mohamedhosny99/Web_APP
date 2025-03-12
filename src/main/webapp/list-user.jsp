@@ -281,19 +281,13 @@
       <button type="button" onclick="resetForm()">Back</button>
     </form>
 
-    <script>
-      function resetForm() {
-        window.location.href = "ListUserServlet"; // Reload page to show all users
-      }
-    </script>
 
     <table>
       <thead>
       <tr>
         <th>User ID</th>
         <th>Name</th>
-        <th>Type</th>
-        <th>Action</th>
+       <center> <th>Action</th></center>
       </tr>
       </thead>
       <tbody>
@@ -305,9 +299,12 @@
       <tr>
         <td><%= user.getUserId() %></td>
         <td><%= user.getUsername() %></td>
-        <td><%= user.getType() %></td>
+
         <td class="actions">
-          <button onclick="setUserAndRedirect(<%= user.getUserId() %>, '<%= user.getUsername() %>', '<%= user.getType() %>')">View SMS History</button>
+          <form action="UserSmsServlet" method="GET">
+            <input type="hidden" name="user_id" value="<%= user.getUserId() %>">
+            <button type="submit">View SMS History</button>
+          </form>
         </td>
       </tr>
       <%
