@@ -43,7 +43,6 @@ public class TwilioVerificationServlet extends HttpServlet {
                 System.out.println("Verification code: "+verificationCode);
                 session.setAttribute("phone", phone);
 
-                // Send verification code via Twilio
                 try (Connection conn = DBConnection.DBconnection.getConnection()) {
                     if (userId == null) {
                         throw new SQLException("User ID is required");
@@ -75,7 +74,7 @@ public class TwilioVerificationServlet extends HttpServlet {
             } catch (SQLException e) {
                 System.err.println("Database error: " + e.getMessage());
                 response.sendRedirect("home.jsp?error=Database error: " + e.getMessage());
-            } catch (AuthenticationException e) { // Correct exception
+            } catch (AuthenticationException e) {
                 System.err.println("Error sending Twilio message: " + e.getMessage());
                 response.sendRedirect("home.jsp?error=Trial ended");
             } catch (Exception e) {
@@ -89,7 +88,6 @@ public class TwilioVerificationServlet extends HttpServlet {
             if (sessionCode != null && sessionCode.equals(userCode)) {
                 try (Connection conn = DBConnection.DBconnection.getConnection()) {
                     String sql = "SELECT twilio_account_sid, twilio_sender_id, twilio_auth_token FROM customer WHERE user_id = ?";
-                    String smsSQL = "INSERT INTO sms (tatus) VALUES (?) WHERE user_id=?";
                     PreparedStatement stmt = conn.prepareStatement(sql);
                     stmt.setInt(1, userId);
                     ResultSet rs = stmt.executeQuery();
@@ -99,14 +97,13 @@ public class TwilioVerificationServlet extends HttpServlet {
                         String senderId = rs.getString("twilio_sender_id");
                         String token = rs.getString("twilio_auth_token");
 
-                        // Send a confirmation message
                         sendTwilioMessage(phone, "Hello! Your number has been verified. This is your Twilio message.", token, accountSid, senderId);
                         response.sendRedirect("smsSend.jsp");
                     }
                 } catch (SQLException e) {
                     System.err.println("Database error: " + e.getMessage());
                     response.sendRedirect("home.jsp?error=Database error: " + e.getMessage());
-                } catch (AuthenticationException e) { // Correct exception
+                } catch (AuthenticationException e) {
                     System.err.println("Error sending Twilio message: " + e.getMessage());
                     response.sendRedirect("home.jsp?error=Failed to send Twilio message: Authentication error");
                 } catch (Exception e) {
@@ -122,10 +119,8 @@ public class TwilioVerificationServlet extends HttpServlet {
 
     static void sendTwilioMessage(String to, String messageBody, String token, String accountSid, String senderID) throws AuthenticationException {
         try {
-            // Initialize Twilio
             Twilio.init(accountSid, token);
 
-            // Send message
             Message message = Message.creator(
                     new PhoneNumber(to),
                     new PhoneNumber(senderID),
