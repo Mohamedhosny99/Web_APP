@@ -182,11 +182,6 @@
             color: #555;
         }
 
-        /*.actions {*/
-        /*    display: flex;*/
-        /*    gap: 10px;*/
-        /*}*/
-
         .actions button {
             padding: 8px 12px;
             border: none;
@@ -270,11 +265,6 @@
             th, td {
                 padding: 10px;
             }
-
-            /*.actions {*/
-            /*    flex-direction: row;*/
-            /*    gap: 5px;*/
-            /*}*/
 
             .actions button {
                 width: 100%;
