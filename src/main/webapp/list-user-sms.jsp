@@ -182,11 +182,6 @@
             color: #555;
         }
 
-        .actions {
-
-            gap: 10px;
-        }
-
         .actions button {
             padding: 8px 12px;
             border: none;
@@ -271,11 +266,6 @@
                 padding: 10px;
             }
 
-            .actions {
-                flex-direction: rows;
-                gap: 5px;
-            }
-
             .actions button {
                 width: 100%;
             }
@@ -306,6 +296,7 @@
                 <th>Status</th>
                 <th>Edit</th>
                 <th>Delete</th>
+
             </tr>
             </thead>
             <tbody>
@@ -326,14 +317,17 @@
                     <form>
                         <button type="submit" class="edit">Edit</button>
                     </form>
-
                 </td>
-                <td  class="actions" >
-                    <form action="DeleteServlet" method="POST">
-                        <input type="hidden" name="smsId"   value=<%= sms.getSmsId() %>>
+
+                <td  class="actions">
+                    <form>
                         <button type="submit" class="delete">Delete</button>
                     </form>
                 </td>
+
+
+
+
             </tr>
             <%
                 }
