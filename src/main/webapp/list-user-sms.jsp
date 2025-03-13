@@ -182,10 +182,10 @@
             color: #555;
         }
 
-        .actions {
-            display: flex;
-            gap: 10px;
-        }
+        /*.actions {*/
+        /*    display: flex;*/
+        /*    gap: 10px;*/
+        /*}*/
 
         .actions button {
             padding: 8px 12px;
@@ -271,10 +271,10 @@
                 padding: 10px;
             }
 
-            .actions {
-                flex-direction: column;
-                gap: 5px;
-            }
+            /*.actions {*/
+            /*    flex-direction: row;*/
+            /*    gap: 5px;*/
+            /*}*/
 
             .actions button {
                 width: 100%;
@@ -326,6 +326,12 @@
                 <td  class="actions">
                     <form>
                         <button type="submit" class="edit">Edit</button>
+                    </form>
+                </td>
+
+                <td  class="actions">
+                    <form>
+                        <button type="submit" class="delete">Delete</button>
                     </form>
                 </td>
 
