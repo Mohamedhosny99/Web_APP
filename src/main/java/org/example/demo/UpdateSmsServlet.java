@@ -30,10 +30,15 @@ public class UpdateSmsServlet extends HttpServlet {
         }
 
         try (Connection conn = DBconnection.getConnection()) {
-            // Update query
+           
             String sql = "UPDATE sms SET body = ? WHERE sms_id = ?";
             String sql2 = "SELECT user_id FROM sms WHERE sms_id = ?";
             String Sql3 = "select username from customer where user_id = ?" ;
+            String updateDateSql = "UPDATE sms SET sent_date = NOW() WHERE sms_id = ?";
+            try (PreparedStatement pstmtDate = conn.prepareStatement(updateDateSql)) {
+                pstmtDate.setInt(1, smsId);
+                pstmtDate.executeUpdate();
+            }
             int  userid = 0;
             String username = null;
             HttpSession session = request.getSession();
