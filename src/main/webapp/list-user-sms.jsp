@@ -323,7 +323,8 @@
                 <td><%= sms.isInbound() ? "Yes" : "No" %></td>
                 <td><%= sms.getStatus() %></td>
                 <td  class="actions">
-                    <form>
+                    <form  action="edit.jsp" method="POST" >
+                        <input type="hidden" name="smsId"   value=<%= sms.getSmsId() %>>
                         <button type="submit" class="edit">Edit</button>
                     </form>
 
