@@ -29,7 +29,7 @@ public class SendSmsServlet extends HttpServlet {
         String accountSid = (String) session.getAttribute("twilio_account_sid");
         String senderId = (String) session.getAttribute("twilio_sender_id");
         String authToken = (String) session.getAttribute("twilio_auth_token");
-
+        System.out.println(accountSid+" this is sid Line 32");
         if (accountSid == null || senderId == null || authToken == null) {
             response.sendRedirect("smsSend.jsp?error=Twilio credentials not found. Please verify your phone number.");
             return;
@@ -68,7 +68,7 @@ public class SendSmsServlet extends HttpServlet {
             }
 
             // Send SMS via Twilio
-            TwilioVerificationServlet.sendTwilioMessage(toNumber, messageBody, authToken, accountSid, senderId);
+           TwilioVerificationServlet.sendTwilioMessage(toNumber, messageBody, authToken, accountSid, senderId);
 
             // Update the SMS status to "success"
             updateSmsStatus(conn, smsId, "success", messageBody);
@@ -114,7 +114,7 @@ public class SendSmsServlet extends HttpServlet {
     }
 
     private void updateSmsStatus(Connection conn, int smsId, String status, String body) throws SQLException {
-        String updateSql = "UPDATE sms SET status = ?, body = ? WHERE user_id = ?";
+        String updateSql = "UPDATE sms SET status = ?, body = ? WHERE sms_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
             stmt.setString(1, status);
             stmt.setString(2, body);

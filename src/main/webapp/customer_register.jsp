@@ -131,8 +131,8 @@
         <input type="text" name="role" placeholder="Job" required>
         <input type="email" name="email" placeholder="Email" required>
         <input type="text" name="address" placeholder="Address" required>
-        <input type="text" name="twilioSID" placeholder="Twilio Account SID" required>
-        <input type="text" name="twilioToken" placeholder="Twilio Token" required>
+        <input type="Password" name="twilioSID" placeholder="Twilio Account SID" required>
+        <input type="Password" name="twilioToken" placeholder="Twilio Token" required>
         <input type="text" name="senderID" placeholder="Twilio Allowed SenderID" required>
         <button type="submit">Register</button>
     </form>
