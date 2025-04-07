@@ -39,8 +39,4 @@ This project provides a platform where:
 - Twilio account (with SID, Token, and SenderID)
 - Web server (e.g., Apache Tomcat) for Servlets
 
-## Setup Instructions
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/yourusername/sms-management-system.git
-   cd sms-management-system
+
